@@ -1,0 +1,199 @@
+{
+  "model": "gemini-3-pro-image",
+  "style": "Art style: HD-2D, the same as the first reference image. The characters are crisp, detailed pixel-art sprites with the same size, proportions, and pixel style as the kids in the first reference image. They stand in a scene with soft 3D-looking depth, soft moonlight, glow, and depth-of-field blur in the background.",
+  "body": "Character look: cute kid fantasy heroes. They are slim and about 3 heads tall, with real arms and legs and kid proportions. Not chunky, not bean-shaped. All of them are kids about 10 years old: no beards, no adults. Big expressive eyes, friendly faces, bright colors. Original characters only, not any known game character, mascot, or brand. No Native American sacred imagery: no headdresses, no totem poles. No text, no UI, no logos, no name labels.",
+  "world": "The place is a bayou swamp at night, like the second reference image: moonlight, fireflies, glowing mushrooms, Spanish moss, and a wooden boardwalk. The background is soft, dark, and blurred so the kids stand out clearly.",
+  "layout": "A character select screen of a video game: exactly 6 kid heroes stand in one row on the boardwalk, side by side, all facing the viewer in confident, happy poses. They are evenly spaced with a clear empty gap between each kid, so no kid overlaps another. All 6 are the same height and fill most of the image height, with their full bodies visible from head to feet.",
+  "rarities": [
+    {
+      "id": "common",
+      "name": "Common",
+      "color": "#9aa5b1",
+      "extra": "",
+      "kids": [
+        "a raccoon-hood rogue kid in a gray raccoon-ear hood with a striped tail scarf and two small daggers",
+        "a kid lumberjack in a red flannel shirt with an enchanted axe that has faint green runes",
+        "a river otter water mage kid in a blue otter-ear hood with a small orb of water",
+        "a beekeeper kid in a white bee suit and veil hat with a small round honey golem beside them",
+        "a gold-rush prospector kid with a wide hat and a magic gold pan that sparkles",
+        "a firefly lantern keeper kid holding a glass lantern full of fireflies"
+      ],
+      "skins": [
+        {
+          "name": "Raccoon Rogue",
+          "health": 3,
+          "attack": 7
+        },
+        {
+          "name": "Kid Lumberjack",
+          "health": 6,
+          "attack": 4
+        },
+        {
+          "name": "Otter Water Mage",
+          "health": 4,
+          "attack": 6
+        },
+        {
+          "name": "Beekeeper",
+          "health": 7,
+          "attack": 3
+        },
+        {
+          "name": "Gold-Rush Prospector",
+          "health": 5,
+          "attack": 5
+        },
+        {
+          "name": "Lantern Keeper",
+          "health": 8,
+          "attack": 2
+        }
+      ]
+    },
+    {
+      "id": "rare",
+      "name": "Rare",
+      "color": "#4aa3ff",
+      "extra": "Rare skins have a little more detail and a soft blue glow accent.",
+      "kids": [
+        "a jackalope rider kid with a small jackalope (a rabbit with tiny antlers) standing beside them",
+        "a cactus paladin kid in green armor shaped like a saguaro cactus with a flower on the helmet and a round shield",
+        "an owl-feather night scout kid in a brown cloak with owl feathers and big goggles",
+        "a mushroom alchemist kid with a red-spotted mushroom cap hat and bubbling potion bottles",
+        "a canyon eagle glider kid with a wing-shaped cape spread out and flight goggles",
+        "a glacier ice knight kid in pale blue ice-crystal armor with an ice sword"
+      ],
+      "skins": [
+        {
+          "name": "Jackalope Rider",
+          "health": 4,
+          "attack": 7
+        },
+        {
+          "name": "Cactus Paladin",
+          "health": 8,
+          "attack": 3
+        },
+        {
+          "name": "Owl Night Scout",
+          "health": 3,
+          "attack": 8
+        },
+        {
+          "name": "Mushroom Alchemist",
+          "health": 5,
+          "attack": 6
+        },
+        {
+          "name": "Eagle Glider",
+          "health": 6,
+          "attack": 5
+        },
+        {
+          "name": "Glacier Knight",
+          "health": 7,
+          "attack": 4
+        }
+      ]
+    },
+    {
+      "id": "epic",
+      "name": "Epic",
+      "color": "#b26bff",
+      "extra": "Epic skins are funny pop-culture costumes with a soft purple glow accent.",
+      "kids": [
+        "a hot dog knight kid in a hot dog costume with a mustard-yellow sword and a bun shield",
+        "a pizza wizard kid in a robe with pizza slice patterns and a staff topped by a pizza slice",
+        "a skateboard bard kid with an electric guitar on their back and a skateboard under one arm",
+        "a robot cowboy kid, a small friendly robot in a cowboy hat with a rope lasso",
+        "a kid in a green dinosaur costume with the dino head as a hood",
+        "an astronaut ranger kid in a white space suit with a fishbowl helmet and a ranger badge"
+      ],
+      "skins": [
+        {
+          "name": "Hot Dog Knight",
+          "health": 7,
+          "attack": 4
+        },
+        {
+          "name": "Pizza Wizard",
+          "health": 3,
+          "attack": 8
+        },
+        {
+          "name": "Skateboard Bard",
+          "health": 5,
+          "attack": 6
+        },
+        {
+          "name": "Robot Cowboy",
+          "health": 10,
+          "attack": 1
+        },
+        {
+          "name": "Dino Kid",
+          "health": 6,
+          "attack": 5
+        },
+        {
+          "name": "Astronaut Ranger",
+          "health": 4,
+          "attack": 7
+        }
+      ]
+    },
+    {
+      "id": "legendary",
+      "name": "Legendary",
+      "color": "#ffb020",
+      "extra": "Legendary skins have gold trim, more glow, and small floating sparkles.",
+      "kids": [
+        "an aurora druid kid in a cloak that glows with green and pink aurora light",
+        "a golden Bigfoot cub: a small, chubby baby Bigfoot with a round baby face, big cute eyes, no beard, no chin hair, no muscles, shining golden fur and a few gold armor pieces, the same height as the other kids",
+        "a storm chaser kid in a yellow raincoat with a crackling lightning rod staff",
+        "a moon wolf hunter kid in a silver wolf-head hood with a crescent moon bow",
+        "a starfall archer kid with a bow that shoots star sparkles and a starry cape",
+        "an ancient redwood guardian: a human kid with a clearly human face and skin, wearing open-faced armor carved from red bark, a helmet like a tree stump ring, small leaves on the shoulders, and a wooden shield. The kid is a person in armor, not a tree creature"
+      ],
+      "skins": [
+        {
+          "name": "Aurora Druid",
+          "health": 7,
+          "attack": 5
+        },
+        {
+          "name": "Golden Bigfoot Cub",
+          "health": 9,
+          "attack": 3
+        },
+        {
+          "name": "Storm Chaser",
+          "health": 3,
+          "attack": 9
+        },
+        {
+          "name": "Moon Wolf Hunter",
+          "health": 5,
+          "attack": 7
+        },
+        {
+          "name": "Starfall Archer",
+          "health": 4,
+          "attack": 8
+        },
+        {
+          "name": "Redwood Guardian",
+          "health": 8,
+          "attack": 4
+        }
+      ]
+    }
+  ],
+  "points": {
+    "common": 10,
+    "rare": 11,
+    "epic": 11,
+    "legendary": 12
+  }
+}
