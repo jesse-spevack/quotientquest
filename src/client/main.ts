@@ -1,29 +1,28 @@
 import "@fontsource/lilita-one/400.css";
 import "@fontsource/nunito/800.css";
 import Phaser from "phaser";
+import { initialLayout, watchWindow } from "./display";
 import { BootScene } from "./scenes/BootScene";
 import { TitleScene } from "./scenes/TitleScene";
-import { colors, GAME_HEIGHT, GAME_WIDTH } from "./theme";
+import { colors } from "./theme";
 
 async function start() {
   await Promise.all([document.fonts.load('64px "Lilita One"'), document.fonts.load('800 64px "Nunito"')]);
 
+  const layout = initialLayout();
   const game = new Phaser.Game({
     type: Phaser.AUTO,
     parent: "game",
-    width: GAME_WIDTH,
-    height: GAME_HEIGHT,
+    width: layout.canvasWidth,
+    height: layout.canvasHeight,
     backgroundColor: colors.night,
     pixelArt: true,
-    scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
+    scale: { mode: Phaser.Scale.NONE, zoom: 1 / layout.devicePixelRatio },
     input: { activePointers: 2 },
     scene: [BootScene, TitleScene],
   });
 
-  // Art is drawn at 4x, so a smooth browser downscale of the canvas stays crisp; pixelArt's crisp CSS jags it.
-  game.events.once(Phaser.Core.Events.READY, () => {
-    game.canvas.style.imageRendering = "auto";
-  });
+  game.events.once(Phaser.Core.Events.READY, () => watchWindow(game));
 }
 
 start();

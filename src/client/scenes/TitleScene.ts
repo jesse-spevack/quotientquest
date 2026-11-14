@@ -1,6 +1,12 @@
 import Phaser from "phaser";
+import { fitPixelSprite, fitText, onLayout } from "../display";
+import { DESIGN_HEIGHT, DESIGN_WIDTH } from "../layout";
 import { connectToHub, type ServerStatus } from "../serverLink";
-import { colors, fonts, GAME_HEIGHT, GAME_WIDTH } from "../theme";
+import { colors, fonts, MIN_TEXT_SIZE } from "../theme";
+
+const FEET_Y = 840;
+const BOARDWALK_TOP = 705;
+const FEET_ROW = 156 / 160;
 
 export class TitleScene extends Phaser.Scene {
   private statusText!: Phaser.GameObjects.Text;
@@ -10,33 +16,55 @@ export class TitleScene extends Phaser.Scene {
   }
 
   create() {
-    this.textures.get("swamp-far").setFilter(Phaser.Textures.FilterMode.LINEAR);
-    this.add.image(GAME_WIDTH / 2, GAME_HEIGHT / 2, "swamp-far").setDisplaySize(GAME_WIDTH, GAME_HEIGHT);
-    this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, colors.night, 0.35);
+    this.add.image(DESIGN_WIDTH / 2, DESIGN_HEIGHT / 2, "swamp-far").setDisplaySize(DESIGN_WIDTH, DESIGN_HEIGHT);
+    this.add.rectangle(DESIGN_WIDTH / 2, DESIGN_HEIGHT / 2, DESIGN_WIDTH, DESIGN_HEIGHT, colors.night, 0.35);
+    this.add.image(DESIGN_WIDTH / 2, BOARDWALK_TOP, "swamp-near").setOrigin(0.5, 0);
 
-    this.add
-      .text(GAME_WIDTH / 2, 400, "Quotient Quest", {
+    const ranger = this.add.sprite(250, FEET_Y, "ranger").setOrigin(0.5, FEET_ROW).setTint(colors.moonTint);
+    const bigfoot = this.add
+      .sprite(DESIGN_WIDTH - 250, FEET_Y, "bigfoot")
+      .setOrigin(0.5, FEET_ROW)
+      .setFlipX(true)
+      .setTint(colors.moonTint);
+    ranger.play("ranger-idle");
+    bigfoot.play("bigfoot-idle");
+
+    const title = this.add
+      .text(DESIGN_WIDTH / 2, 400, "Quotient Quest", {
         fontFamily: fonts.display,
         fontSize: "168px",
         color: colors.firefly,
-        stroke: "#0b1420",
+        stroke: colors.nightText,
         strokeThickness: 18,
       })
       .setOrigin(0.5)
       .setShadow(0, 10, "#000000", 24, true, true);
 
-    this.add
-      .text(GAME_WIDTH / 2, 560, "Math battles in the swamp", {
+    const subtitle = this.add
+      .text(DESIGN_WIDTH / 2, 560, "Math battles in the swamp", {
         fontFamily: fonts.body,
         fontStyle: "800",
-        fontSize: "52px",
+        fontSize: "56px",
         color: colors.moonlight,
+        stroke: colors.nightText,
+        strokeThickness: 8,
       })
       .setOrigin(0.5);
 
     this.statusText = this.add
-      .text(GAME_WIDTH / 2, GAME_HEIGHT - 90, "", { fontFamily: fonts.body, fontStyle: "800", fontSize: "40px" })
+      .text(DESIGN_WIDTH / 2, DESIGN_HEIGHT - 80, "", {
+        fontFamily: fonts.body,
+        fontStyle: "800",
+        fontSize: `${MIN_TEXT_SIZE}px`,
+        stroke: colors.nightText,
+        strokeThickness: 8,
+      })
       .setOrigin(0.5);
+
+    onLayout(this, (layout) => {
+      for (const sprite of [ranger, bigfoot]) fitPixelSprite(sprite, layout);
+      for (const text of [title, subtitle, this.statusText]) fitText(text, layout);
+    });
 
     const disconnect = connectToHub((status) => this.showStatus(status));
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, disconnect);

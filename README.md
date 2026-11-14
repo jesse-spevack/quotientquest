@@ -14,6 +14,19 @@ The game is TypeScript on Cloudflare.
 - `migrations` holds the D1 database changes, in order.
 - `test` holds the tests. They run inside the Workers runtime with a local D1 database.
 
+## Screen and pixel rules
+
+Every scene follows these rules. The code is in `src/client/layout.ts` and `src/client/display.ts`.
+
+- The canvas has the real device pixels of the screen: the CSS size times `devicePixelRatio`. The browser never scales the canvas.
+- Scenes use design coordinates: 1920 x 1080. The main camera shows this 16:9 play area in the center of the canvas, with a letterbox in the night color.
+- The play area is 270 art pixels tall. The pixel scale is the play area height in device pixels divided by 270, rounded down, and at least 1. Each art pixel is a square of that many device pixels.
+- Give each pixel-art sprite a frame of art pixels (1x, not pre-scaled). Call `fitPixelSprite` for it in `onLayout`. Do not set its scale in any other place.
+- Painted layers, such as the swamp backgrounds, can scale smoothly. Set their texture filter to `LINEAR`.
+- Call `fitText` for each text in `onLayout`. Phaser then draws the text at device resolution.
+- UI text is at least `MIN_TEXT_SIZE` (48 design px). That is at least 16 CSS px on a phone in landscape.
+- Because the pixel scale rounds down, sprites can be up to about 25% smaller on some screens. Leave room for that in each layout.
+
 ## Run the game
 
 Use Node 24 and npm 11.6.2 or later. npm 11.5 crashes when it installs the test tools.
