@@ -1,0 +1,83 @@
+<title>Quotient Quest Worlds</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito+Sans:opsz,wght@6..12,400;6..12,700;6..12,800&display=swap">
+<style>
+/* Layout: a movie-poster wall at dusk. One big frame per world, stacked full width. A sticky tray collects the picks. Dark by choice: art reads best on a dark wall. */
+:root {
+  --wall: #17151a;       /* dusk wall, warm bias */
+  --frame: #231f25;      /* frame mat */
+  --line: #3a3438;
+  --paper: #f4ede4;      /* label text */
+  --muted: #a89e9c;
+  --blossom: #f5a447;    /* the one accent: golden hour */
+  --jade: #52c79e;       /* picked state */
+  --display: "Bungee", Impact, "Arial Black", sans-serif;
+  --body: "Nunito Sans", system-ui, -apple-system, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--wall); color: var(--paper); font-family: var(--body); font-size: 16px; line-height: 1.5; }
+.wrap { max-width: 1040px; margin: 0 auto; padding-block: 32px 120px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 40px; }
+h1, h2 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(30px, 6vw, 50px); line-height: 1.05; }
+h1 span { color: var(--blossom); }
+p { margin: 0; max-width: 64ch; }
+.intro { display: grid; gap: 12px; }
+.muted { color: var(--muted); }
+.list { display: grid; gap: 36px; }
+.style { display: grid; gap: 14px; }
+.pick { all: unset; cursor: pointer; display: block; position: relative; border: 3px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--frame); max-width: 100%; }
+.pick:focus-visible { outline: 3px solid var(--blossom); outline-offset: 3px; }
+.pick img { display: block; width: 100%; height: auto; aspect-ratio: 1376 / 768; }
+.pick[aria-pressed="true"] { border-color: var(--jade); }
+.badge { position: absolute; top: 10px; right: 10px; background: var(--jade); color: var(--wall); font-weight: 800; font-size: 14px; padding: 4px 10px; border-radius: 99px; }
+.pick[aria-pressed="false"] .badge { display: none; }
+.label { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; }
+.code { font-family: var(--body); font-weight: 800; font-size: 15px; letter-spacing: 0.08em; color: var(--blossom); }
+.label h2 { font-size: 22px; }
+.label p { flex-basis: 100%; color: var(--muted); }
+.tray { position: fixed; left: 0; right: 0; bottom: 0; background: var(--frame); border-top: 1px solid var(--line); padding-block: 12px calc(12px + env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.tray-in { max-width: 1040px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; }
+#picked { font-weight: 700; min-width: 0; }
+#copy { font: inherit; font-weight: 800; background: var(--blossom); color: var(--wall); border: 0; border-radius: 6px; padding: 10px 18px; cursor: pointer; }
+#copy:disabled { opacity: 0.4; cursor: default; }
+#copy:focus-visible { outline: 3px solid var(--paper); outline-offset: 2px; }
+</style>
+
+<div class="wrap">
+  <header class="intro">
+    <h1>Quotient Quest <span>worlds</span></h1>
+    <p>You picked the HD-2D style: pixel characters in a scene with soft light and depth. Each picture shows that style in a different American world. Tap the worlds you like, then copy the codes and send them to Claude.</p>
+    <p class="muted">The game draws the health bars and the math buttons with code, so ignore small errors in that text.</p>
+  </header>
+  <main class="list">
+%%DIRECTIONS%%
+  </main>
+</div>
+<div class="tray"><div class="tray-in"><span id="picked">No world picked yet.</span><button id="copy" type="button" disabled>Copy codes</button></div></div>
+
+<script>
+const picks = new Set();
+const out = document.getElementById('picked');
+const copy = document.getElementById('copy');
+function render() {
+  const codes = [...picks].sort();
+  out.textContent = codes.length ? 'Picked: ' + codes.join(', ') : 'No world picked yet.';
+  copy.disabled = !codes.length;
+  copy.textContent = 'Copy codes';
+}
+document.querySelectorAll('.pick').forEach(button => button.addEventListener('click', () => {
+  const code = button.dataset.code;
+  picks.has(code) ? picks.delete(code) : picks.add(code);
+  button.setAttribute('aria-pressed', picks.has(code));
+  render();
+}));
+copy.addEventListener('click', () => {
+  const text = 'Quotient Quest worlds: ' + [...picks].sort().join(', ');
+  navigator.clipboard.writeText(text).then(() => { copy.textContent = 'Copied'; }).catch(() => {
+    const range = document.createRange(); range.selectNodeContents(out);
+    const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range);
+    copy.textContent = 'Select and copy';
+  });
+});
+</script>
