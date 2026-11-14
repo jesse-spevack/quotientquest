@@ -1,0 +1,1124 @@
+{
+ "frame": 160,
+ "columns": 10,
+ "foot": 156,
+ "skins": {
+  "ranger": {
+   "code": "H01",
+   "name": "Ranger Archer",
+   "rarity": "starter",
+   "class": "Archer",
+   "health": 4,
+   "attack": 6,
+   "palette": [
+    "#807232",
+    "#653a1a",
+    "#2a4926",
+    "#92ab5d"
+   ],
+   "sheet": "ranger/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 4
+    },
+    "defeat": {
+     "start": 31,
+     "count": 9
+    }
+   }
+  },
+  "moss-druid": {
+   "code": "H02",
+   "name": "Moss Druid",
+   "rarity": "starter",
+   "class": "Mage",
+   "health": 6,
+   "attack": 4,
+   "palette": [
+    "#655a3b",
+    "#49261f",
+    "#4b3a2c",
+    "#919964"
+   ],
+   "sheet": "moss-druid/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 9
+    },
+    "defeat": {
+     "start": 36,
+     "count": 9
+    }
+   }
+  },
+  "copper-knight": {
+   "code": "H03",
+   "name": "Copper Knight",
+   "rarity": "starter",
+   "class": "Knight",
+   "health": 7,
+   "attack": 3,
+   "palette": [
+    "#4e3131",
+    "#92674f",
+    "#843c25",
+    "#cda78b"
+   ],
+   "sheet": "copper-knight/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 9
+    },
+    "defeat": {
+     "start": 36,
+     "count": 9
+    }
+   }
+  },
+  "pinecone-wizard": {
+   "code": "H04",
+   "name": "Pinecone Wizard",
+   "rarity": "starter",
+   "class": "Mage",
+   "health": 3,
+   "attack": 7,
+   "palette": [
+    "#40668e",
+    "#183b70",
+    "#593e3c",
+    "#baa974"
+   ],
+   "sheet": "pinecone-wizard/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 8
+    },
+    "defeat": {
+     "start": 35,
+     "count": 9
+    }
+   }
+  },
+  "crystal-miner": {
+   "code": "H05",
+   "name": "Crystal Miner",
+   "rarity": "starter",
+   "class": "Brawler",
+   "health": 5,
+   "attack": 5,
+   "palette": [
+    "#6c4c33",
+    "#4f312c",
+    "#d5c589",
+    "#8b7356"
+   ],
+   "sheet": "crystal-miner/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 8
+    },
+    "defeat": {
+     "start": 35,
+     "count": 9
+    }
+   }
+  },
+  "bigfoot-cub": {
+   "code": "H06",
+   "name": "Bigfoot Cub",
+   "rarity": "starter",
+   "class": "Brawler",
+   "health": 6,
+   "attack": 4,
+   "palette": [
+    "#6d2404",
+    "#a4460b",
+    "#a36d38",
+    "#caaf6c"
+   ],
+   "sheet": "bigfoot-cub/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 2
+    },
+    "attackA": {
+     "start": 2,
+     "count": 9
+    },
+    "attackB": {
+     "start": 11,
+     "count": 9
+    },
+    "hurt": {
+     "start": 20,
+     "count": 4
+    },
+    "defeat": {
+     "start": 24,
+     "count": 9
+    }
+   }
+  },
+  "raccoon-rogue": {
+   "code": "K01",
+   "name": "Raccoon Rogue",
+   "rarity": "common",
+   "class": "Rogue",
+   "health": 3,
+   "attack": 7,
+   "palette": [
+    "#6b6669",
+    "#514343",
+    "#3a2a30",
+    "#a79a93"
+   ],
+   "sheet": "raccoon-rogue/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 8
+    },
+    "defeat": {
+     "start": 35,
+     "count": 9
+    }
+   }
+  },
+  "kid-lumberjack": {
+   "code": "K02",
+   "name": "Kid Lumberjack",
+   "rarity": "common",
+   "class": "Brawler",
+   "health": 6,
+   "attack": 4,
+   "palette": [
+    "#7f3521",
+    "#626365",
+    "#b7ac8b",
+    "#432a33"
+   ],
+   "sheet": "kid-lumberjack/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 8
+    },
+    "defeat": {
+     "start": 35,
+     "count": 9
+    }
+   }
+  },
+  "otter-mage": {
+   "code": "K03",
+   "name": "Otter Water Mage",
+   "rarity": "common",
+   "class": "Mage",
+   "health": 4,
+   "attack": 6,
+   "palette": [
+    "#257ac4",
+    "#49363a",
+    "#9ca08a",
+    "#4e5c6e"
+   ],
+   "sheet": "otter-mage/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 8
+    },
+    "defeat": {
+     "start": 35,
+     "count": 9
+    }
+   }
+  },
+  "beekeeper": {
+   "code": "K04",
+   "name": "Beekeeper",
+   "rarity": "common",
+   "class": "Tamer",
+   "health": 7,
+   "attack": 3,
+   "palette": [
+    "#4d2b48",
+    "#d7e3ed",
+    "#b9a37f",
+    "#76614e"
+   ],
+   "sheet": "beekeeper/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 9
+    },
+    "defeat": {
+     "start": 36,
+     "count": 9
+    }
+   }
+  },
+  "prospector": {
+   "code": "K05",
+   "name": "Gold-Rush Prospector",
+   "rarity": "common",
+   "class": "Rogue",
+   "health": 5,
+   "attack": 5,
+   "palette": [
+    "#6d4a2f",
+    "#dab67f",
+    "#5b2c27",
+    "#837257"
+   ],
+   "sheet": "prospector/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 9
+    },
+    "defeat": {
+     "start": 36,
+     "count": 9
+    }
+   }
+  },
+  "lantern-keeper": {
+   "code": "K06",
+   "name": "Lantern Keeper",
+   "rarity": "common",
+   "class": "Mage",
+   "health": 8,
+   "attack": 2,
+   "palette": [
+    "#657048",
+    "#65482e",
+    "#482b27",
+    "#bdaa58"
+   ],
+   "sheet": "lantern-keeper/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 8
+    },
+    "defeat": {
+     "start": 35,
+     "count": 9
+    }
+   }
+  },
+  "jackalope-rider": {
+   "code": "K07",
+   "name": "Jackalope Rider",
+   "rarity": "rare",
+   "class": "Tamer",
+   "health": 4,
+   "attack": 7,
+   "palette": [
+    "#66422e",
+    "#492c29",
+    "#7d6045",
+    "#b69d7e"
+   ],
+   "sheet": "jackalope-rider/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 9
+    },
+    "defeat": {
+     "start": 36,
+     "count": 9
+    }
+   }
+  },
+  "cactus-paladin": {
+   "code": "K08",
+   "name": "Cactus Paladin",
+   "rarity": "rare",
+   "class": "Knight",
+   "health": 8,
+   "attack": 3,
+   "palette": [
+    "#2c5138",
+    "#508055",
+    "#7fae68",
+    "#62413a"
+   ],
+   "sheet": "cactus-paladin/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 9
+    },
+    "defeat": {
+     "start": 36,
+     "count": 9
+    }
+   }
+  },
+  "owl-scout": {
+   "code": "K09",
+   "name": "Owl Night Scout",
+   "rarity": "rare",
+   "class": "Archer",
+   "health": 3,
+   "attack": 8,
+   "palette": [
+    "#5d3829",
+    "#73513a",
+    "#442b23",
+    "#908679"
+   ],
+   "sheet": "owl-scout/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 8
+    },
+    "defeat": {
+     "start": 35,
+     "count": 9
+    }
+   }
+  },
+  "mushroom-alchemist": {
+   "code": "K10",
+   "name": "Mushroom Alchemist",
+   "rarity": "rare",
+   "class": "Mage",
+   "health": 5,
+   "attack": 6,
+   "palette": [
+    "#512e2a",
+    "#c8b490",
+    "#886c5c",
+    "#9b3826"
+   ],
+   "sheet": "mushroom-alchemist/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 8
+    },
+    "defeat": {
+     "start": 35,
+     "count": 9
+    }
+   }
+  },
+  "eagle-glider": {
+   "code": "K11",
+   "name": "Eagle Glider",
+   "rarity": "rare",
+   "class": "Rogue",
+   "health": 6,
+   "attack": 5,
+   "palette": [
+    "#765235",
+    "#482b23",
+    "#5f3c27",
+    "#99856e"
+   ],
+   "sheet": "eagle-glider/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 9
+    },
+    "defeat": {
+     "start": 36,
+     "count": 9
+    }
+   }
+  },
+  "glacier-knight": {
+   "code": "K12",
+   "name": "Glacier Knight",
+   "rarity": "rare",
+   "class": "Knight",
+   "health": 7,
+   "attack": 4,
+   "palette": [
+    "#60add8",
+    "#303f59",
+    "#98d9f2",
+    "#4880a5"
+   ],
+   "sheet": "glacier-knight/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 9
+    },
+    "defeat": {
+     "start": 36,
+     "count": 9
+    }
+   }
+  },
+  "hot-dog-knight": {
+   "code": "K13",
+   "name": "Hot Dog Knight",
+   "rarity": "epic",
+   "class": "Knight",
+   "health": 7,
+   "attack": 4,
+   "palette": [
+    "#8a5130",
+    "#623323",
+    "#b07a44",
+    "#eabb65"
+   ],
+   "sheet": "hot-dog-knight/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 9
+    },
+    "defeat": {
+     "start": 36,
+     "count": 9
+    }
+   }
+  },
+  "pizza-wizard": {
+   "code": "K14",
+   "name": "Pizza Wizard",
+   "rarity": "epic",
+   "class": "Mage",
+   "health": 3,
+   "attack": 8,
+   "palette": [
+    "#865960",
+    "#422842",
+    "#cea060",
+    "#6a3d54"
+   ],
+   "sheet": "pizza-wizard/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 7
+    },
+    "defeat": {
+     "start": 34,
+     "count": 9
+    }
+   }
+  },
+  "skateboard-bard": {
+   "code": "K15",
+   "name": "Skateboard Bard",
+   "rarity": "epic",
+   "class": "Rogue",
+   "health": 5,
+   "attack": 6,
+   "palette": [
+    "#823224",
+    "#2d364b",
+    "#5f636d",
+    "#c2b5a8"
+   ],
+   "sheet": "skateboard-bard/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 8
+    },
+    "attackB": {
+     "start": 17,
+     "count": 9
+    },
+    "hurt": {
+     "start": 26,
+     "count": 9
+    },
+    "defeat": {
+     "start": 35,
+     "count": 9
+    }
+   }
+  },
+  "robot-cowboy": {
+   "code": "K16",
+   "name": "Robot Cowboy",
+   "rarity": "epic",
+   "class": "Archer",
+   "health": 10,
+   "attack": 1,
+   "palette": [
+    "#743b2d",
+    "#656561",
+    "#819aa6",
+    "#3e3540"
+   ],
+   "sheet": "robot-cowboy/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 8
+    },
+    "defeat": {
+     "start": 35,
+     "count": 9
+    }
+   }
+  },
+  "dino-kid": {
+   "code": "K17",
+   "name": "Dino Kid",
+   "rarity": "epic",
+   "class": "Brawler",
+   "health": 6,
+   "attack": 5,
+   "palette": [
+    "#48a050",
+    "#3e7750",
+    "#354442",
+    "#aebe7f"
+   ],
+   "sheet": "dino-kid/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 8
+    },
+    "defeat": {
+     "start": 35,
+     "count": 9
+    }
+   }
+  },
+  "astronaut-ranger": {
+   "code": "K18",
+   "name": "Astronaut Ranger",
+   "rarity": "epic",
+   "class": "Archer",
+   "health": 4,
+   "attack": 7,
+   "palette": [
+    "#879caf",
+    "#483842",
+    "#ccd1d2",
+    "#6a6569"
+   ],
+   "sheet": "astronaut-ranger/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 8
+    },
+    "attackB": {
+     "start": 17,
+     "count": 9
+    },
+    "hurt": {
+     "start": 26,
+     "count": 8
+    },
+    "defeat": {
+     "start": 34,
+     "count": 9
+    }
+   }
+  },
+  "aurora-druid": {
+   "code": "K19",
+   "name": "Aurora Druid",
+   "rarity": "legendary",
+   "class": "Mage",
+   "health": 7,
+   "attack": 5,
+   "palette": [
+    "#625138",
+    "#462d27",
+    "#7ac392",
+    "#848574"
+   ],
+   "sheet": "aurora-druid/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 7
+    },
+    "defeat": {
+     "start": 34,
+     "count": 9
+    }
+   }
+  },
+  "golden-bigfoot": {
+   "code": "K20",
+   "name": "Golden Bigfoot Cub",
+   "rarity": "legendary",
+   "class": "Brawler",
+   "health": 9,
+   "attack": 3,
+   "palette": [
+    "#a76929",
+    "#f5c93d",
+    "#5f382d",
+    "#d19343"
+   ],
+   "sheet": "golden-bigfoot/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 9
+    },
+    "defeat": {
+     "start": 36,
+     "count": 9
+    }
+   }
+  },
+  "storm-chaser": {
+   "code": "K21",
+   "name": "Storm Chaser",
+   "rarity": "legendary",
+   "class": "Mage",
+   "health": 3,
+   "attack": 9,
+   "palette": [
+    "#f2de36",
+    "#58392d",
+    "#dfb738",
+    "#b58422"
+   ],
+   "sheet": "storm-chaser/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 8
+    },
+    "defeat": {
+     "start": 35,
+     "count": 9
+    }
+   }
+  },
+  "moon-wolf-hunter": {
+   "code": "K22",
+   "name": "Moon Wolf Hunter",
+   "rarity": "legendary",
+   "class": "Tamer",
+   "health": 5,
+   "attack": 7,
+   "palette": [
+    "#bdc0c3",
+    "#442f36",
+    "#81888d",
+    "#53555a"
+   ],
+   "sheet": "moon-wolf-hunter/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 9
+    },
+    "defeat": {
+     "start": 36,
+     "count": 9
+    }
+   }
+  },
+  "starfall-archer": {
+   "code": "K23",
+   "name": "Starfall Archer",
+   "rarity": "legendary",
+   "class": "Archer",
+   "health": 4,
+   "attack": 8,
+   "palette": [
+    "#5b3628",
+    "#675648",
+    "#b3976b",
+    "#322c3a"
+   ],
+   "sheet": "starfall-archer/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 9
+    },
+    "defeat": {
+     "start": 36,
+     "count": 9
+    }
+   }
+  },
+  "redwood-guardian": {
+   "code": "K24",
+   "name": "Redwood Guardian",
+   "rarity": "legendary",
+   "class": "Knight",
+   "health": 8,
+   "attack": 4,
+   "palette": [
+    "#51251c",
+    "#7d472b",
+    "#772f1c",
+    "#b28653"
+   ],
+   "sheet": "redwood-guardian/sheet.png",
+   "animations": {
+    "idle": {
+     "start": 0,
+     "count": 9
+    },
+    "attackA": {
+     "start": 9,
+     "count": 9
+    },
+    "attackB": {
+     "start": 18,
+     "count": 9
+    },
+    "hurt": {
+     "start": 27,
+     "count": 9
+    },
+    "defeat": {
+     "start": 36,
+     "count": 9
+    }
+   }
+  }
+ },
+ "rarities": {
+  "starter": "#7fc28a",
+  "common": "#9aa5b1",
+  "rare": "#4aa3ff",
+  "epic": "#b26bff",
+  "legendary": "#ffb020"
+ }
+}
