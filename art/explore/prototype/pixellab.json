@@ -1,0 +1,28 @@
+{
+  "sprites": [
+    "ranger",
+    "bigfoot"
+  ],
+  "pixel_hint": "clean game sprite, crisp dark outline, keep the flat magenta background flat",
+  "canvas": 160,
+  "frames": {
+    "idle": 8,
+    "attack": 8,
+    "hurt": 6,
+    "defeat": 8
+  },
+  "animations": {
+    "ranger": {
+      "idle": "idle breathing in a ready stance, cloak sways a little",
+      "attack": "draws the glowing bow and shoots an arrow to the right, then lowers the bow",
+      "hurt": "takes a hit: the whole body jolts backward to the left, the head snaps back, then stands ready again. Plain body motion only, no magic, no glow trail, no particles, no effects",
+      "defeat": "falls back and sits down on the ground, dizzy"
+    },
+    "bigfoot": {
+      "idle": "idle breathing in a ready stance, club rests on the shoulder",
+      "attack": "steps forward and swings the club down to the right, then steps back",
+      "hurt": "takes a hit: the whole body jolts backward to the left, the head snaps back, then stands ready again. Plain body motion only, no magic, no glow trail, no particles, no effects",
+      "defeat": "falls back and sits down on the ground, dizzy"
+    }
+  }
+}

@@ -1,0 +1,641 @@
+<title>Quotient Quest Demo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@700;800&display=swap">
+<style>
+  /* Layout: one 16:9 game stage, centered on swamp night, scaled to fit any screen. Single dark look by choice. */
+  :root {
+    --night: #0b1420;
+    --night-2: #13233a;
+    --moon: #dff4ff;
+    --glow: #7fe3ff;
+    --ink: #a9bfd6;
+    --font-display: "Lilita One", "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
+    --font-body: "Nunito", "Segoe UI", system-ui, sans-serif;
+    color-scheme: dark;
+  }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: radial-gradient(120% 90% at 50% 30%, var(--night-2), var(--night) 70%);
+    background-color: var(--night);
+    color: var(--ink);
+    font-family: var(--font-body);
+    box-sizing: border-box;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    overflow: hidden;
+  }
+  #stage {
+    width: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #stage canvas {
+    border-radius: 14px;
+    box-shadow: 0 0 0 1px rgba(127, 227, 255, 0.18), 0 24px 60px rgba(0, 0, 0, 0.55);
+    touch-action: manipulation;
+  }
+  #turn {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: center;
+    color: var(--ink);
+  }
+  @media (orientation: landscape) { #turn { display: none; } }
+  #loading {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-family: var(--font-display);
+    font-size: 28px;
+    color: var(--moon);
+    letter-spacing: 0.02em;
+    pointer-events: none;
+  }
+  #loading[hidden] { display: none; }
+</style>
+
+<div id="stage"></div>
+<p id="turn">Turn your phone sideways for a bigger game.</p>
+<div id="loading">Loading the swamp...</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.90.0/phaser.min.js"></script>
+<script>
+(() => {
+  const W = 1920, H = 1080;
+  const SCALE = 4;            // each art pixel is 4 game pixels
+  const FEET = 840;           // the boardwalk line where the fighters stand
+  const NEAR_TOP = 705;       // the top of the boardwalk layer
+  const MAX_HP = 120;
+  const ROUND_SECONDS = 20;
+  const PROBLEMS = 3;
+  const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const C = {
+    panel: 0x10203a, panelEdge: 0x7fe3ff, card: 0xfff1c9, cardText: "#2a1a0e",
+    good: 0x5fd38a, bad: 0xff6b6b, gold: 0xffd166, moon: 0xdff4ff, glow: 0x7fe3ff,
+    hpYou: 0x5fd38a, hpCpu: 0xff9f43, track: 0x0a1424
+  };
+  const T = {
+    display: (size, color = "#ffffff") => ({ fontFamily: '"Lilita One", "Arial Rounded MT Bold", sans-serif', fontSize: size + "px", color }),
+    body: (size, color = "#dbe8f5") => ({ fontFamily: '"Nunito", "Segoe UI", sans-serif', fontStyle: "800", fontSize: size + "px", color })
+  };
+
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const randInt = (a, b) => Math.floor(rand(a, b + 1));
+  const shuffle = (list) => { for (let i = list.length - 1; i > 0; i--) { const j = randInt(0, i); [list[i], list[j]] = [list[j], list[i]]; } return list; };
+
+  function makeProblem() {
+    const a = randInt(2, 9), b = randInt(2, 9), answer = a * b;
+    const near = [a * (b + 1), a * (b - 1), (a + 1) * b, (a - 1) * b, answer + 1, answer - 1, answer + 10, answer - 2];
+    const wrong = shuffle(near.filter((n, i) => n > 0 && n !== answer && near.indexOf(n) === i)).slice(0, 3);
+    return { text: `${a} \u00d7 ${b} = ?`, answer, options: shuffle([answer, ...wrong]) };
+  }
+
+  class Fight extends Phaser.Scene {
+    constructor() { super("fight"); }
+
+    preload() {
+      this.load.image("far", "far.webp");
+      this.load.image("mid", "mid.webp");
+      this.load.image("near", "near.webp");
+      this.load.json("sheets", "sheets.json");
+      this.load.spritesheet("ranger", "ranger.png", { frameWidth: 160, frameHeight: 160 });
+      this.load.spritesheet("bigfoot", "bigfoot.png", { frameWidth: 160, frameHeight: 160 });
+      this.load.image("ranger-face", "ranger-face.png");
+      this.load.image("bigfoot-face", "bigfoot-face.png");
+    }
+
+    create() {
+      document.getElementById("loading").hidden = true;
+      for (const key of ["ranger", "bigfoot", "ranger-face", "bigfoot-face"]) {
+        this.textures.get(key).setFilter(Phaser.Textures.FilterMode.NEAREST);
+      }
+      this.makeTextures();
+      this.buildWorld();
+      this.buildFighters();
+      this.buildHud();
+      this.buildPanel();
+      this.input.keyboard.on("keydown", (event) => {
+        const n = Number(event.key);
+        if (n >= 1 && n <= 4) this.pick(n - 1);
+      });
+      this.showStart();
+    }
+
+    // ---------- textures drawn in code ----------
+    makeTextures() {
+      const glow = this.textures.createCanvas("glow", 256, 256);
+      const g = glow.getContext();
+      const grad = g.createRadialGradient(128, 128, 0, 128, 128, 128);
+      grad.addColorStop(0, "rgba(255,255,255,1)");
+      grad.addColorStop(0.25, "rgba(255,255,255,0.55)");
+      grad.addColorStop(0.6, "rgba(255,255,255,0.12)");
+      grad.addColorStop(1, "rgba(255,255,255,0)");
+      g.fillStyle = grad; g.fillRect(0, 0, 256, 256); glow.refresh();
+
+      const dot = this.textures.createCanvas("dot", 32, 32);
+      const d = dot.getContext();
+      const dg = d.createRadialGradient(16, 16, 0, 16, 16, 16);
+      dg.addColorStop(0, "rgba(255,255,255,1)");
+      dg.addColorStop(0.3, "rgba(255,255,255,0.8)");
+      dg.addColorStop(1, "rgba(255,255,255,0)");
+      d.fillStyle = dg; d.fillRect(0, 0, 32, 32); dot.refresh();
+
+      const vig = this.textures.createCanvas("vignette", 480, 270);
+      const v = vig.getContext();
+      const vg = v.createRadialGradient(240, 120, 60, 240, 135, 300);
+      vg.addColorStop(0, "rgba(4,10,20,0)");
+      vg.addColorStop(0.6, "rgba(4,10,20,0.15)");
+      vg.addColorStop(1, "rgba(4,10,20,0.7)");
+      v.fillStyle = vg; v.fillRect(0, 0, 480, 270); vig.refresh();
+
+      const arrow = this.textures.createCanvas("arrow", 220, 24);
+      const a = arrow.getContext();
+      const ag = a.createLinearGradient(0, 0, 220, 0);
+      ag.addColorStop(0, "rgba(127,227,255,0)");
+      ag.addColorStop(0.7, "rgba(127,227,255,0.8)");
+      ag.addColorStop(1, "rgba(255,255,255,1)");
+      a.fillStyle = ag; a.fillRect(0, 9, 220, 6);
+      a.fillStyle = "#ffffff"; a.beginPath(); a.moveTo(220, 12); a.lineTo(198, 2); a.lineTo(204, 12); a.lineTo(198, 22); a.closePath(); a.fill();
+      arrow.refresh();
+    }
+
+    // ---------- the swamp ----------
+    buildWorld() {
+      const drift = (target, dx, duration) => {
+        if (REDUCED) return;
+        this.tweens.add({ targets: target, x: `+=${dx}`, duration, yoyo: true, repeat: -1, ease: "Sine.inOut" });
+      };
+      const far = this.add.image(W / 2, H / 2, "far").setScale(1.03);
+      const moon = this.add.image(960, 195, "glow").setScale(2.6).setTint(C.moon).setAlpha(0.35).setBlendMode(Phaser.BlendModes.ADD);
+      const fog = this.add.image(W / 2, 640, "glow").setScale(10, 0.9).setTint(0x9fd8ff).setAlpha(0.16).setBlendMode(Phaser.BlendModes.ADD);
+      const mid = this.add.image(W / 2, H / 2, "mid").setScale(1.04);
+      const shrooms = [[235, 585, 1.5], [125, 660, 1.0], [1650, 600, 1.1], [1795, 612, 0.9]].map(([x, y, s]) =>
+        this.add.image(x, y, "glow").setScale(s).setTint(0x4fd8ff).setAlpha(0.45).setBlendMode(Phaser.BlendModes.ADD));
+      drift([far, moon], 14, 9000);
+      drift(fog, 60, 7000);
+      drift([mid, ...shrooms], 26, 9000);
+      if (!REDUCED) {
+        shrooms.forEach((s, i) => this.tweens.add({ targets: s, alpha: 0.2, duration: 1800 + i * 300, yoyo: true, repeat: -1, ease: "Sine.inOut" }));
+        this.tweens.add({ targets: moon, alpha: 0.25, duration: 4000, yoyo: true, repeat: -1, ease: "Sine.inOut" });
+      }
+
+      this.fireflies = this.add.particles(0, 0, "dot", {
+        x: { min: 0, max: W }, y: { min: 140, max: 820 },
+        lifespan: { min: 5000, max: 9000 },
+        speedX: { min: -18, max: 18 }, speedY: { min: -14, max: 8 },
+        scale: { min: 0.25, max: 0.6 },
+        alpha: { values: [0, 0.95, 0.25, 0.9, 0] },
+        tint: [0xfff3a0, 0xe2ff8a, 0xffe08a],
+        blendMode: Phaser.BlendModes.ADD,
+        frequency: REDUCED ? 600 : 140, quantity: 1, maxAliveParticles: 60
+      });
+      this.fireflies.setDepth(5);
+
+      this.near = this.add.image(W / 2, NEAR_TOP, "near").setOrigin(0.5, 0).setScale(1.02).setDepth(2);
+      drift(this.near, 6, 9000);
+      this.add.image(W / 2, H / 2, "vignette").setDisplaySize(W, H).setDepth(8);
+    }
+
+    // ---------- the two fighters ----------
+    buildFighters() {
+      const sheets = this.cache.json.get("sheets");
+      this.anim = {};
+      for (const key of ["ranger", "bigfoot"]) {
+        this.anim[key] = {};
+        for (const [name, [start, count]] of Object.entries(sheets[key])) {
+          const rate = { idle: 7, attack: 14, hurt: 10, defeat: 10 }[name];
+          this.anims.create({ key: `${key}-${name}`, frames: this.anims.generateFrameNumbers(key, { start, end: start + count - 1 }), frameRate: rate, repeat: name === "idle" ? -1 : 0 });
+          this.anim[key][name] = true;
+        }
+      }
+      const fighter = (key, x, flip) => {
+        const shadow = this.add.ellipse(x, FEET + 4, 230, 34, 0x02060c, 0.5).setDepth(3);
+        const back = this.add.image(x, FEET - 170, "glow").setScale(2.2, 2.8).setTint(0x6fc8ff).setAlpha(0.16).setBlendMode(Phaser.BlendModes.ADD).setDepth(3);
+        const sprite = this.add.sprite(x, FEET, key, 0).setOrigin(0.5, 156 / 160).setScale(SCALE).setFlipX(flip).setDepth(4);
+        sprite.setTint(0xe6eeff);
+        sprite.play(`${key}-idle`);
+        return { key, sprite, shadow, back, home: x, hp: MAX_HP, flip };
+      };
+      this.you = fighter("ranger", 620, false);
+      this.cpu = fighter("bigfoot", 1310, true);
+    }
+
+    // ---------- health bars ----------
+    buildHud() {
+      const side = (who, left) => {
+        const x = left ? 48 : W - 48;
+        const dir = left ? 1 : -1;
+        const box = this.add.graphics().setDepth(20);
+        box.fillStyle(C.panel, 0.92).fillRoundedRect(left ? x : x - 128, 36, 128, 128, 22);
+        box.lineStyle(4, C.panelEdge, 0.7).strokeRoundedRect(left ? x : x - 128, 36, 128, 128, 22);
+        const face = this.add.image(x + dir * 64, 100, `${who.key}-face`).setScale(3).setDepth(21).setFlipX(!left);
+        const nameX = x + dir * 152;
+        this.add.text(nameX, 30, left ? "You" : "Computer player", T.display(46)).setOrigin(left ? 0 : 1, 0).setDepth(21).setShadow(0, 4, "#02060c", 0, false, true);
+        const barW = 560, barX = left ? nameX : nameX - barW;
+        const bar = this.add.graphics().setDepth(20);
+        bar.fillStyle(C.track, 0.9).fillRoundedRect(barX - 6, 92, barW + 12, 46, 23);
+        bar.lineStyle(3, 0xffffff, 0.25).strokeRoundedRect(barX - 6, 92, barW + 12, 46, 23);
+        const fill = this.add.graphics().setDepth(21);
+        const label = this.add.text(left ? barX + 18 : barX + barW - 18, 115, "", T.body(26, "#0b1420")).setOrigin(left ? 0 : 1, 0.5).setDepth(22);
+        const dots = [0, 1, 2].map((i) => this.add.circle(nameX + dir * (16 + i * 40), 172, 13, 0x0a1424, 0.85).setStrokeStyle(3, 0xffffff, 0.5).setDepth(21));
+        who.hud = { fill, label, barX, barW, left, dots, shown: MAX_HP };
+        this.drawHp(who, MAX_HP);
+      };
+      side(this.you, true);
+      side(this.cpu, false);
+      const pill = this.add.graphics().setDepth(20);
+      pill.fillStyle(C.panel, 0.88).fillRoundedRect(W / 2 - 150, 36, 300, 132, 30);
+      pill.lineStyle(4, C.panelEdge, 0.5).strokeRoundedRect(W / 2 - 150, 36, 300, 132, 30);
+      this.roundText = this.add.text(W / 2, 46, "", T.display(54, "#fff1c9")).setOrigin(0.5, 0).setDepth(21).setShadow(0, 4, "#02060c", 0, false, true);
+      this.clock = this.add.text(W / 2, 112, "", T.display(40, "#dff4ff")).setOrigin(0.5, 0).setDepth(21).setShadow(0, 3, "#02060c", 0, false, true);
+    }
+
+    drawHp(who, value) {
+      const { fill, label, barX, barW, left } = who.hud;
+      const w = Math.max(0, (value / MAX_HP) * barW);
+      fill.clear();
+      if (w > 0) {
+        fill.fillStyle(left ? C.hpYou : C.hpCpu, 1).fillRoundedRect(left ? barX : barX + barW - w, 98, w, 34, 17);
+        fill.fillStyle(0xffffff, 0.28).fillRoundedRect(left ? barX + 6 : barX + barW - w + 6, 102, Math.max(0, w - 12), 9, 4);
+      }
+      label.setText(`${Math.ceil(value)} / ${MAX_HP}`);
+      label.setColor(w > 140 ? "#0b1420" : "#ffffff");
+      if (w <= 140) label.setX(left ? barX + Math.max(w, 0) + 14 : barX + barW - w - 14);
+      else label.setX(left ? barX + 18 : barX + barW - 18);
+    }
+
+    tweenHp(who, to) {
+      return new Promise((resolve) => {
+        this.tweens.addCounter({ from: who.hud.shown, to, duration: 520, ease: "Cubic.out",
+          onUpdate: (t) => this.drawHp(who, t.getValue()),
+          onComplete: () => { who.hud.shown = to; resolve(); } });
+      });
+    }
+
+    setDot(who, index, state) {
+      const dot = who.hud.dots[index];
+      if (state === null) dot.setFillStyle(0x0a1424, 0.85).setStrokeStyle(3, 0xffffff, 0.5);
+      else dot.setFillStyle(state ? C.good : C.bad, 1).setStrokeStyle(3, 0xffffff, 0.9);
+      if (state !== null && !REDUCED) this.tweens.add({ targets: dot, scale: { from: 1.5, to: 1 }, duration: 260, ease: "Back.out" });
+    }
+
+    // ---------- the math panel ----------
+    buildPanel() {
+      const px = 210, py = 878, pw = 1500, ph = 176;
+      this.panel = this.add.container(0, 0).setDepth(30);
+      const bg = this.add.graphics();
+      bg.fillStyle(C.panel, 0.9).fillRoundedRect(px, py, pw, ph, 30);
+      bg.lineStyle(4, C.panelEdge, 0.55).strokeRoundedRect(px, py, pw, ph, 30);
+      this.timerBar = this.add.graphics();
+      this.counter = this.add.text(px + 50, py + 26, "", T.body(30, "#a9c7e6"));
+      this.question = this.add.text(px + 50, py + 64, "", T.display(84, "#ffffff"));
+      this.panel.add([bg, this.timerBar, this.counter, this.question]);
+      this.buttons = [0, 1, 2, 3].map((i) => {
+        const bx = 900 + i * 196, by = py + 28, bw = 176, bh = 122;
+        const g = this.add.graphics();
+        const text = this.add.text(bx + bw / 2, by + bh / 2 + 2, "", T.display(66, C.cardText)).setOrigin(0.5);
+        const key = this.add.text(bx + 14, by + 8, String(i + 1), T.body(22, "#8a6a3a"));
+        const zone = this.add.zone(bx, by, bw, bh).setOrigin(0).setInteractive({ useHandCursor: true });
+        const button = { g, text, key, zone, bx, by, bw, bh, state: "idle", hover: false };
+        zone.on("pointerover", () => { button.hover = true; this.drawButton(button); });
+        zone.on("pointerout", () => { button.hover = false; this.drawButton(button); });
+        zone.on("pointerdown", () => this.pick(i));
+        this.panel.add([g, text, key, zone]);
+        this.drawButton(button);
+        return button;
+      });
+      this.panel.setVisible(false);
+    }
+
+    drawButton(b) {
+      const fill = { idle: C.card, good: C.good, bad: C.bad, off: 0x6f7f95 }[b.state];
+      const lift = b.state === "idle" && b.hover ? -6 : 0;
+      b.g.clear();
+      b.g.fillStyle(0x02060c, 0.5).fillRoundedRect(b.bx, b.by + 8, b.bw, b.bh, 24);
+      b.g.fillStyle(fill, 1).fillRoundedRect(b.bx, b.by + lift, b.bw, b.bh, 24);
+      b.g.fillStyle(0xffffff, b.state === "idle" ? 0.45 : 0.25).fillRoundedRect(b.bx + 10, b.by + lift + 8, b.bw - 20, 16, 8);
+      b.text.setY(b.by + b.bh / 2 + 2 + lift);
+      b.key.setY(b.by + 8 + lift);
+      b.text.setColor(b.state === "idle" ? C.cardText : "#ffffff");
+    }
+
+    drawTimer(fraction) {
+      const x = 260, y = 878 + 14, w = 1400;
+      this.timerBar.clear();
+      this.timerBar.fillStyle(0x0a1424, 0.9).fillRoundedRect(x, y, w, 10, 5);
+      const color = fraction > 0.35 ? C.glow : fraction > 0.15 ? C.gold : C.bad;
+      if (fraction > 0) this.timerBar.fillStyle(color, 1).fillRoundedRect(x, y, w * fraction, 10, 5);
+    }
+
+    // ---------- overlays ----------
+    overlay(lines, buttonText, onPress) {
+      const layer = this.add.container(0, 0).setDepth(50);
+      const dim = this.add.rectangle(W / 2, H / 2, W, H, 0x050b14, 0.62).setInteractive();
+      const card = this.add.graphics();
+      layer.add([dim, card]);
+      let y = 250;
+      for (const line of lines) {
+        const text = this.add.text(W / 2, y, line.text, line.style).setOrigin(0.5, 0).setAlign("center").setWordWrapWidth(960);
+        if (line.shadow) text.setShadow(0, 5, "#02060c", 0, false, true);
+        layer.add(text);
+        y += text.height + (line.gap ?? 18);
+      }
+      const bw = 460, bh = 120, bx = W / 2 - bw / 2, by = y + 30;
+      const top = 190, bottom = by + bh + 50;
+      card.fillStyle(C.panel, 0.96).fillRoundedRect(W / 2 - 580, top, 1160, bottom - top, 40);
+      card.lineStyle(5, C.panelEdge, 0.6).strokeRoundedRect(W / 2 - 580, top, 1160, bottom - top, 40);
+      const g = this.add.graphics();
+      const draw = (hover) => {
+        g.clear();
+        g.fillStyle(0x02060c, 0.5).fillRoundedRect(bx, by + 10, bw, bh, 30);
+        g.fillStyle(C.gold, 1).fillRoundedRect(bx, by - (hover ? 6 : 0), bw, bh, 30);
+        g.fillStyle(0xffffff, 0.4).fillRoundedRect(bx + 14, by + 10 - (hover ? 6 : 0), bw - 28, 18, 9);
+        label.setY(by + bh / 2 - (hover ? 6 : 0));
+      };
+      const label = this.add.text(W / 2, by + bh / 2, buttonText, T.display(56, "#2a1a0e")).setOrigin(0.5);
+      draw(false);
+      const zone = this.add.zone(bx, by, bw, bh).setOrigin(0).setInteractive({ useHandCursor: true });
+      zone.on("pointerover", () => draw(true));
+      zone.on("pointerout", () => draw(false));
+      const go = () => { this.input.keyboard.off("keydown-ENTER", go); layer.destroy(); onPress(); };
+      zone.on("pointerdown", go);
+      this.input.keyboard.once("keydown-ENTER", go);
+      layer.add([g, label, zone]);
+      layer.setAlpha(0);
+      this.tweens.add({ targets: layer, alpha: 1, duration: 260 });
+      return layer;
+    }
+
+    showStart() {
+      this.overlay([
+        { text: "Quotient Quest", style: T.display(112, "#fff1c9"), shadow: true, gap: 4 },
+        { text: "Swamp fight demo", style: T.body(38, "#7fe3ff"), gap: 34 },
+        { text: "Each round, you get 3 problems and 20 seconds.\nRight answers make your attack strong. Fast answers make it stronger.\nBring the health of the computer player to 0 to win.", style: { ...T.body(34, "#dbe8f5"), lineSpacing: 14 } }
+      ], "Start the fight", () => this.newFight());
+    }
+
+    newFight() {
+      for (const who of [this.you, this.cpu]) {
+        who.hp = MAX_HP; who.hud.shown = MAX_HP; this.drawHp(who, MAX_HP);
+        who.sprite.setPosition(who.home, FEET).setAlpha(1).setAngle(0).play(`${who.key}-idle`);
+      }
+      this.round = 0;
+      this.nextRound();
+    }
+
+    // ---------- one round of math ----------
+    nextRound() {
+      this.round += 1;
+      this.roundText.setText(`Round ${this.round}`);
+      this.problems = Array.from({ length: PROBLEMS }, makeProblem);
+      this.index = 0;
+      this.you.score = { correct: 0, done: 0, finishedAt: null, times: [] };
+      this.cpu.score = { correct: 0, done: 0, finishedAt: null };
+      [0, 1, 2].forEach((i) => { this.setDot(this.you, i, null); this.setDot(this.cpu, i, null); });
+      this.roundStart = this.time.now;
+      this.problemStart = this.time.now;
+      this.accepting = true;
+      this.panel.setVisible(true).setAlpha(0);
+      this.tweens.add({ targets: this.panel, alpha: 1, duration: 200 });
+      this.showProblem();
+      this.cpuThinks();
+      this.ticker = this.time.addEvent({ delay: 50, loop: true, callback: () => this.tick() });
+    }
+
+    showProblem() {
+      const p = this.problems[this.index];
+      this.counter.setText(`Problem ${this.index + 1} of ${PROBLEMS}`);
+      this.question.setText(p.text).setFontSize(84);
+      this.buttons.forEach((b, i) => { b.state = "idle"; b.text.setText(String(p.options[i])); this.drawButton(b); });
+      this.problemStart = this.time.now;
+      this.accepting = true;
+    }
+
+    tick() {
+      const elapsed = this.time.now - this.roundStart;
+      const left = Math.max(0, ROUND_SECONDS - elapsed / 1000);
+      this.cpuStep(elapsed);
+      this.drawTimer(left / ROUND_SECONDS);
+      this.clock.setText(`${Math.ceil(left)} s`);
+      if (left <= 0 || (this.you.score.finishedAt && this.cpu.score.finishedAt)) this.endRound();
+    }
+
+    pick(i) {
+      if (!this.accepting || !this.panel.visible) return;
+      this.accepting = false;
+      const p = this.problems[this.index];
+      const right = p.options[i] === p.answer;
+      const s = this.you.score;
+      s.times.push((this.time.now - this.problemStart) / 1000);
+      if (right) s.correct += 1;
+      this.setDot(this.you, this.index, right);
+      this.buttons.forEach((b, j) => { b.state = p.options[j] === p.answer ? "good" : j === i ? "bad" : "off"; this.drawButton(b); });
+      s.done += 1;
+      this.time.delayedCall(right ? 380 : 750, () => {
+        if (this.index < PROBLEMS - 1) { this.index += 1; this.showProblem(); }
+        else { s.finishedAt = this.time.now; this.waitForOther(); }
+      });
+    }
+
+    // The computer player answers at planned moments of the round clock, so slow frames on a phone keep it fair.
+    cpuThinks() {
+      let t = 0;
+      this.cpuPlan = [0, 1, 2].map(() => { t += rand(2.4, 6.2) * 1000; return { at: t, right: Math.random() < 0.72 }; });
+    }
+
+    cpuStep(elapsed) {
+      const s = this.cpu.score;
+      while (s.done < PROBLEMS && this.cpuPlan[s.done].at <= elapsed) {
+        const step = this.cpuPlan[s.done];
+        if (step.right) s.correct += 1;
+        this.setDot(this.cpu, s.done, step.right);
+        s.done += 1;
+        if (s.done === PROBLEMS) s.finishedAt = this.roundStart + step.at;
+      }
+    }
+
+    waitForOther() {
+      if (this.cpu.score.finishedAt) return;
+      this.counter.setText("You are done.");
+      this.question.setText("Wait for the other player...");
+      this.question.setFontSize(56);
+      this.buttons.forEach((b) => { b.state = "off"; b.text.setText(""); this.drawButton(b); });
+    }
+
+    endRound() {
+      if (!this.ticker) return;
+      this.ticker.remove(); this.ticker = null;
+      this.accepting = false;
+      this.tweens.add({ targets: this.panel, alpha: 0, duration: 200, onComplete: () => this.panel.setVisible(false) });
+      this.clock.setText("Attack");
+      const you = this.attackFor(this.you, this.cpu);
+      const cpu = this.attackFor(this.cpu, this.you);
+      this.showResults(you, cpu).then(() => this.trade(you, cpu));
+    }
+
+    attackFor(who, other) {
+      const s = who.score;
+      const parts = [];
+      let power = s.correct * 8 + (PROBLEMS - s.correct) * 3;
+      if (s.correct === PROBLEMS) parts.push(["All correct", 1.5]);
+      if (who === this.you && s.correct > 0) {
+        const avg = s.times.reduce((a, b) => a + b, 0) / s.times.length;
+        if (avg < 4) parts.push(["Fast", 1.25]);
+      }
+      if (who === this.cpu && s.correct > 0 && s.finishedAt && s.finishedAt - this.roundStart < 12000) parts.push(["Fast", 1.25]);
+      const mine = s.finishedAt ?? Infinity, theirs = other.score.finishedAt ?? Infinity;
+      if (mine < theirs) parts.push(["First done", 1.2]);
+      const luck = Math.round(rand(0.9, 1.15) * 100) / 100;
+      parts.push(["Luck", luck]);
+      for (const [, m] of parts) power *= m;
+      return { who, correct: s.correct, parts, damage: Math.max(4, Math.round(power)) };
+    }
+
+    showResults(you, cpu) {
+      return new Promise((resolve) => {
+        const layer = this.add.container(0, 0).setDepth(40);
+        const column = (r, left) => {
+          const x = left ? 250 : W - 250;
+          const card = this.add.graphics();
+          const h = 196 + r.parts.length * 64;
+          card.fillStyle(C.panel, 0.86).fillRoundedRect(x - 200, 222, 400, h, 30);
+          card.lineStyle(4, C.panelEdge, 0.45).strokeRoundedRect(x - 200, 222, 400, h, 30);
+          layer.add(card);
+          const head = this.add.text(x, 250, `${r.correct} of ${PROBLEMS} right`, T.display(48, "#ffffff")).setOrigin(0.5, 0).setShadow(0, 4, "#02060c", 0, false, true);
+          layer.add(head);
+          r.parts.forEach(([name, m], i) => {
+            const label = `${name} \u00d7${m.toFixed(2).replace(/0$/, "")}`;
+            const text = this.add.text(x, 330 + i * 64, label, T.body(32, "#0b1420")).setOrigin(0.5);
+            const pill = this.add.graphics();
+            const w = text.width + 48;
+            pill.fillStyle(name === "Luck" ? 0xb9c6ff : C.gold, 1).fillRoundedRect(x - w / 2, 330 + i * 64 - 26, w, 52, 26);
+            layer.add([pill, text]);
+          });
+          const total = this.add.text(x, 340 + r.parts.length * 64, `Attack ${r.damage}`, T.display(64, "#7fe3ff")).setOrigin(0.5, 0).setShadow(0, 4, "#02060c", 0, false, true);
+          layer.add(total);
+        };
+        column(you, true);
+        column(cpu, false);
+        layer.setAlpha(0);
+        this.tweens.add({ targets: layer, alpha: 1, duration: 220 });
+        this.time.delayedCall(2300, () => this.tweens.add({ targets: layer, alpha: 0, duration: 260, onComplete: () => { layer.destroy(); resolve(); } }));
+      });
+    }
+
+    // ---------- attacks ----------
+    wait(ms) { return new Promise((r) => this.time.delayedCall(ms, r)); }
+
+    playOnce(who, name) {
+      return new Promise((resolve) => {
+        const key = `${who.key}-${name}`;
+        if (!this.anims.exists(key)) { resolve(); return; }
+        who.sprite.play(key);
+        who.sprite.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => resolve());
+      });
+    }
+
+    async attack(attacker, defender, damage) {
+      const dir = attacker.flip ? -1 : 1;
+      const anim = this.playOnce(attacker, "attack");
+      if (attacker.key === "ranger") {
+        await this.wait(330);
+        const arrow = this.add.image(attacker.home + 150, FEET - 205, "arrow").setDepth(6).setBlendMode(Phaser.BlendModes.ADD).setScale(1.4, 1.2);
+        const trail = this.add.particles(0, 0, "dot", { follow: arrow, lifespan: 260, scale: { start: 0.7, end: 0 }, tint: C.glow, blendMode: Phaser.BlendModes.ADD, frequency: 12 }).setDepth(6);
+        await new Promise((r) => this.tweens.add({ targets: arrow, x: defender.home - 70, duration: 220, ease: "Quad.in", onComplete: r }));
+        arrow.destroy(); this.time.delayedCall(300, () => trail.destroy());
+      } else {
+        this.tweens.add({ targets: [attacker.sprite, attacker.shadow, attacker.back], x: `+=${dir * 150}`, duration: 260, ease: "Quad.out", yoyo: true, hold: 260 });
+        await this.wait(330);
+      }
+      await this.hit(defender, damage, dir);
+      await anim;
+      attacker.sprite.play(`${attacker.key}-idle`);
+    }
+
+    async hit(who, damage, dir) {
+      this.burst(who.home + (who.flip ? -20 : 20), FEET - 190);
+      if (!REDUCED) this.cameras.main.shake(160, 0.006);
+      who.sprite.setTintFill(0xffffff);
+      this.time.delayedCall(70, () => who.sprite.setTint(0xe6eeff));
+      this.tweens.add({ targets: who.sprite, x: who.home + dir * 34, duration: 90, yoyo: true, ease: "Quad.out" });
+      const pop = this.add.text(who.home, FEET - 420, `-${damage}`, T.display(86, "#ffd166")).setOrigin(0.5).setDepth(45).setStroke("#2a1a0e", 12);
+      this.tweens.add({ targets: pop, y: "-=90", alpha: { from: 1, to: 0 }, duration: 1100, ease: "Cubic.out", onComplete: () => pop.destroy() });
+      who.hp = Math.max(0, who.hp - damage);
+      const hurt = who.hp > 0 ? this.playOnce(who, "hurt") : Promise.resolve();
+      await Promise.all([this.tweenHp(who, who.hp), hurt]);
+      if (who.hp > 0) who.sprite.play(`${who.key}-idle`);
+    }
+
+    burst(x, y) {
+      const ring = this.add.image(x, y, "glow").setTint(C.glow).setBlendMode(Phaser.BlendModes.ADD).setDepth(7).setScale(0.4).setAlpha(0.9);
+      this.tweens.add({ targets: ring, scale: 2.2, alpha: 0, duration: 380, ease: "Cubic.out", onComplete: () => ring.destroy() });
+      const sparks = this.add.particles(x, y, "dot", { speed: { min: 240, max: 620 }, lifespan: 420, scale: { start: 0.9, end: 0 }, tint: [0xffffff, C.glow, C.gold], blendMode: Phaser.BlendModes.ADD, emitting: false }).setDepth(7);
+      sparks.explode(26);
+      this.time.delayedCall(600, () => sparks.destroy());
+    }
+
+    async trade(you, cpu) {
+      const order = you.damage >= cpu.damage ? [[this.you, this.cpu, you.damage], [this.cpu, this.you, cpu.damage]] : [[this.cpu, this.you, cpu.damage], [this.you, this.cpu, you.damage]];
+      for (const [a, d, dmg] of order) {
+        if (a.hp <= 0 || d.hp <= 0) break;
+        await this.attack(a, d, dmg);
+        await this.wait(250);
+      }
+      const loser = this.you.hp <= 0 ? this.you : this.cpu.hp <= 0 ? this.cpu : null;
+      if (!loser) { await this.wait(400); this.nextRound(); return; }
+      await this.playOnce(loser, "defeat");
+      await this.wait(500);
+      this.showEnd(loser === this.cpu);
+    }
+
+    showEnd(won) {
+      if (won) {
+        const big = Math.random() < 0.2;
+        const coins = 20 + Math.round(MAX_HP / 10) + (big ? 25 : 0);
+        this.overlay([
+          { text: "You win!", style: T.display(132, "#fff1c9"), shadow: true, gap: 10 },
+          { text: `You get ${coins} coins.`, style: T.display(60, "#ffd166"), gap: 18 },
+          { text: big ? "Lucky you: a big coin was in the swamp. That is 25 more." : `You won in ${this.round} rounds.`, style: T.body(34, "#dbe8f5") }
+        ], "Play again", () => this.newFight());
+      } else {
+        this.overlay([
+          { text: "The computer player wins", style: T.display(92, "#fff1c9"), shadow: true, gap: 10 },
+          { text: "You get 5 coins for a good fight.", style: T.display(52, "#ffd166"), gap: 18 },
+          { text: "Fast and right answers make your attack stronger.", style: T.body(34, "#dbe8f5") }
+        ], "Try again", () => this.newFight());
+      }
+    }
+  }
+
+  const start = () => window.quotientQuest = new Phaser.Game({
+    type: Phaser.AUTO,
+    parent: "stage",
+    width: W,
+    height: H,
+    backgroundColor: "#0b1420",
+    roundPixels: true,
+    scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.NO_CENTER },
+    scene: Fight
+  });
+  const fonts = document.fonts ? Promise.race([
+    Promise.all([document.fonts.load('64px "Lilita One"'), document.fonts.load('800 32px "Nunito"')]),
+    new Promise((r) => setTimeout(r, 2500))
+  ]) : Promise.resolve();
+  fonts.then(start, start);
+})();
+</script>
