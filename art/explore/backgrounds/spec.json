@@ -1,0 +1,44 @@
+{
+  "model": "gemini-3-pro-image",
+  "reference": "../heroes2/raw/H2-battle.png",
+  "keep": "The attached image is a screenshot of our game. Make a new screenshot of the same game. Keep the two fighters exactly the same: the same kid ranger archer in a green hooded cloak with a glowing bow on the left, and the same young Bigfoot cub with a rune club on the right, with the same crisp pixel-art sprite style, the same size, and the same poses. Keep the same game UI exactly: two health bars with small portraits at the top, and at the bottom a panel with \"7 × 8 = ?\" and 4 answer buttons 54, 56, 63, 48. All 4 buttons look the same; no button is lit. No name labels, no other text, no logos. Change only the place behind the fighters.",
+  "goals": "Art style: HD-2D. The place must be breathtaking, much more beautiful than the attached image. Strong layered depth, like parallax layers: a dark foreground layer at the edges, a middle layer, and far layers that fade into haze. Dramatic soft light: light rays, rim light on the fighters, glow, bloom, atmospheric haze. Rich, saturated color. The far layers have a painterly, impressionistic texture with visible soft brush strokes. Near the fighters, the detail is crisp pixel art. The fighters stand on clear, mostly flat ground in the middle of the image. Keep calm, simple areas behind the health bars and behind the bottom panel so the UI stays readable. American wilderness, not East Asian. Cool and exciting for a 10-year-old.",
+  "places": [
+    {
+      "id": "B1",
+      "name": "Redwood grove at golden hour",
+      "prompt": "Do not reuse the forest of the attached image: paint a new, grander redwood scene. A cathedral of giant redwood trees, so tall that they rise far out of view, with a huge fallen trunk covered in moss in the middle layer. Thick golden light rays slant down through drifting mist and catch floating dust and pollen. Sword ferns, clover, and small white trillium flowers cover the ground. A small creek with a mossy log bridge crosses the far layer. Far trunks fade into glowing amber and blue haze, painted in soft impressionistic strokes.",
+      "note": "The forest from round 5, with deeper light and mist."
+    },
+    {
+      "id": "B2",
+      "name": "Canyon arches at sunset",
+      "prompt": "A red-rock canyon at sunset. The fighters stand on a flat sandstone ledge. Behind them, giant natural stone arches glow orange and pink. Far below, a turquoise river winds through the canyon. Layered mesas fade into a violet sky.",
+      "note": "Warm reds and a big drop behind the fight."
+    },
+    {
+      "id": "B3",
+      "name": "Alpine lake at dawn",
+      "prompt": "An alpine meadow beside a still mountain lake at dawn. Wildflowers in purple, yellow, and red. Snowy peaks turn pink in the first light and reflect like a mirror in the lake. Pine trees frame the edges. Thin mist floats on the water.",
+      "note": "Cool blues and pinks, with a calm mirror lake."
+    },
+    {
+      "id": "B4",
+      "name": "Bayou at night",
+      "prompt": "A bayou swamp at night. The fighters stand on a flat wooden boardwalk over dark water. Old cypress trees drip with Spanish moss. Hundreds of fireflies glow gold. Glowing blue and green mushrooms grow on the roots. A huge full moon shines through the mist and reflects in the water.",
+      "note": "A night arena, with glow from fireflies and mushrooms."
+    },
+    {
+      "id": "B5",
+      "name": "Saguaro desert under stars",
+      "prompt": "A desert of giant saguaro cacti at blue hour. The fighters stand on flat, warm orange-tan sand with small rocks, desert grasses, and a few blooming prickly pear cacti near the edges. The sky is full of stars and a bright band of the Milky Way, with a glowing purple, pink, and orange dusk band near the horizon. Saguaros stand in layers: dark shapes in front with soft rim light, paler shapes behind. Far red mesas fade into blue haze, painted in soft impressionistic strokes.",
+      "note": "A big starry sky with strong shapes of cacti."
+    },
+    {
+      "id": "B6",
+      "name": "Geyser basin in the mist",
+      "prompt": "A geyser basin in the morning. The fighters stand on flat, pale mineral ground. Hot springs glow in rings of blue, turquoise, yellow, and orange. Clouds of steam rise and catch the light. A geyser erupts far away. A small herd of bison walks through the steam in the distance.",
+      "note": "Bright hot-spring colors and moving steam."
+    }
+  ]
+}
