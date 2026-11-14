@@ -1,0 +1,649 @@
+{
+ "canvas": 160,
+ "frames": {
+  "idle": 8,
+  "attackA": 8,
+  "attackB": 8,
+  "hurt": 8,
+  "defeat": 8
+ },
+ "classes": {
+  "Archer": {
+   "attackA": "raises the {weapon}, aims to the right, shoots with a quick recoil of the arms and shoulders, then lowers the {weapon}",
+   "attackB": "plants the feet wide, leans back and pulls back hard for a big charged shot aimed to the right, holds it, then releases with a strong recoil that pushes the body back a step"
+  },
+  "Mage": {
+   "attackA": "lunges forward and thrusts the {weapon} far forward to the right with the arm fully extended, holds it a moment, then pulls back to the ready stance",
+   "attackB": "raises the {weapon} high over the head with both hands, then swings it down and forward to the right in a big arc while leaning forward, then returns to the ready stance"
+  },
+  "Brawler": {
+   "attackA": "steps forward and swings the {weapon} hard to the right in a wide arc, then steps back to the ready stance",
+   "attackB": "lifts the {weapon} high over the head with both hands, then slams it straight down onto the ground in front with the knees bent, then stands up again"
+  },
+  "Knight": {
+   "attackA": "steps forward and slashes the {weapon} down to the right, then steps back to guard",
+   "attackB": "raises the shield in front, charges two quick steps forward to the right and bashes hard with the shield, then steps back to guard"
+  },
+  "Rogue": {
+   "attackA": "dashes forward to the right and makes two quick strikes with the {weapon}, then hops back to the ready stance",
+   "attackB": "crouches low, leaps forward to the right in a spinning flip, strikes down on landing, then hops back to the ready stance"
+  },
+  "Tamer": {
+   "attackA": "the kid points forward to the right, and the {weapon} companion runs forward, jumps and strikes, then runs back beside the kid",
+   "attackB": "the kid raises both arms and cheers, and the {weapon} companion charges forward fast to the right, rams hard, then bounces back beside the kid"
+  }
+ },
+ "common": {
+  "idle": "breathing idle in place: the chest rises and falls, a small up and down bob, the {weapon} sways a little, the feet stay planted",
+  "hurt": "recoils hard from a hit: the whole body is knocked back to the left and leans far back, the head is thrown back, one foot lifts off the ground, then the body recovers to the ready stance",
+  "defeat": "collapses: the knees buckle, the body falls backward and sits down hard on the ground, the head droops, dizzy, and stays seated"
+ },
+ "rarities": {
+  "starter": "#7fc28a",
+  "common": "#9aa5b1",
+  "rare": "#4aa3ff",
+  "epic": "#b26bff",
+  "legendary": "#ffb020"
+ },
+ "style_ref": "art/explore/prototype/raw/ranger.png",
+ "skins": [
+  {
+   "code": "H01",
+   "id": "ranger",
+   "name": "Ranger Archer",
+   "rarity": "starter",
+   "class": "Archer",
+   "health": 4,
+   "attack": 6,
+   "prototype": "ranger"
+  },
+  {
+   "code": "H02",
+   "id": "moss-druid",
+   "name": "Moss Druid",
+   "rarity": "starter",
+   "class": "Mage",
+   "health": 6,
+   "attack": 4,
+   "look": "a moss druid kid with a small antler crown, a green leaf cloak, and a short wooden staff with a leaf on top",
+   "weapon": "wooden staff",
+   "source": {
+    "image": "art/explore/heroes2/raw/H2-lineup.png",
+    "box": [
+     335,
+     380,
+     480,
+     665
+    ]
+   }
+  },
+  {
+   "code": "H03",
+   "id": "copper-knight",
+   "name": "Copper Knight",
+   "rarity": "starter",
+   "class": "Knight",
+   "health": 7,
+   "attack": 3,
+   "look": "a kid knight in copper armor with a red plume on the helmet, an open face, a round copper shield, and a short sword",
+   "weapon": "short sword",
+   "source": {
+    "image": "art/explore/heroes2/raw/H2-lineup.png",
+    "box": [
+     505,
+     380,
+     685,
+     665
+    ]
+   }
+  },
+  {
+   "code": "H04",
+   "id": "pinecone-wizard",
+   "name": "Pinecone Wizard",
+   "rarity": "starter",
+   "class": "Mage",
+   "health": 3,
+   "attack": 7,
+   "look": "a kid wizard in a blue starry robe and a pointed blue hat, with a tall staff topped by a big pinecone",
+   "weapon": "pinecone staff",
+   "source": {
+    "image": "art/explore/heroes2/raw/H2-lineup.png",
+    "box": [
+     688,
+     380,
+     880,
+     665
+    ]
+   }
+  },
+  {
+   "code": "H05",
+   "id": "crystal-miner",
+   "name": "Crystal Miner",
+   "rarity": "starter",
+   "class": "Brawler",
+   "health": 5,
+   "attack": 5,
+   "look": "a kid miner with a helmet lamp, brown overalls, and a pickaxe with a pink crystal head",
+   "weapon": "crystal pickaxe",
+   "source": {
+    "image": "art/explore/heroes2/raw/H2-lineup.png",
+    "box": [
+     885,
+     380,
+     1078,
+     665
+    ]
+   }
+  },
+  {
+   "code": "H06",
+   "id": "bigfoot-cub",
+   "name": "Bigfoot Cub",
+   "rarity": "starter",
+   "class": "Brawler",
+   "health": 6,
+   "attack": 4,
+   "prototype": "bigfoot"
+  },
+  {
+   "code": "K01",
+   "id": "raccoon-rogue",
+   "name": "Raccoon Rogue",
+   "rarity": "common",
+   "class": "Rogue",
+   "health": 3,
+   "attack": 7,
+   "look": "a kid in a gray raccoon-ear hood with a black eye mask, a striped raccoon-tail scarf, and two small daggers",
+   "weapon": "two small daggers",
+   "source": {
+    "image": "art/explore/skins/raw/common.png",
+    "box": [
+     60,
+     280,
+     290,
+     608
+    ]
+   }
+  },
+  {
+   "code": "K02",
+   "id": "kid-lumberjack",
+   "name": "Kid Lumberjack",
+   "rarity": "common",
+   "class": "Brawler",
+   "health": 6,
+   "attack": 4,
+   "look": "a kid lumberjack in a red flannel shirt and jeans with a big axe that has green runes on the blade",
+   "weapon": "axe",
+   "source": {
+    "image": "art/explore/skins/raw/common.png",
+    "box": [
+     318,
+     280,
+     505,
+     608
+    ]
+   }
+  },
+  {
+   "code": "K03",
+   "id": "otter-mage",
+   "name": "Otter Water Mage",
+   "rarity": "common",
+   "class": "Mage",
+   "health": 4,
+   "attack": 6,
+   "look": "a cute otter water mage in a blue hooded robe, holding a small orb of water in one paw",
+   "weapon": "water orb",
+   "source": {
+    "image": "art/explore/skins/raw/common.png",
+    "box": [
+     522,
+     280,
+     712,
+     608
+    ]
+   }
+  },
+  {
+   "code": "K04",
+   "id": "beekeeper",
+   "name": "Beekeeper",
+   "rarity": "common",
+   "class": "Tamer",
+   "health": 7,
+   "attack": 3,
+   "look": "a beekeeper kid in a white bee suit with a veil hat, with a small round orange honey golem companion",
+   "weapon": "honey golem",
+   "source": {
+    "image": "art/explore/skins/raw/common.png",
+    "box": [
+     725,
+     280,
+     938,
+     608
+    ]
+   },
+   "pet": "a small round orange honey golem made of honey, standing at the kid's feet in front, about knee high"
+  },
+  {
+   "code": "K05",
+   "id": "prospector",
+   "name": "Gold-Rush Prospector",
+   "rarity": "common",
+   "class": "Rogue",
+   "health": 5,
+   "attack": 5,
+   "look": "a gold-rush prospector kid with a wide straw hat, a red bandana, and a gold pan full of gold nuggets",
+   "weapon": "gold pan",
+   "source": {
+    "image": "art/explore/skins/raw/common.png",
+    "box": [
+     938,
+     280,
+     1125,
+     608
+    ]
+   }
+  },
+  {
+   "code": "K06",
+   "id": "lantern-keeper",
+   "name": "Lantern Keeper",
+   "rarity": "common",
+   "class": "Mage",
+   "health": 8,
+   "attack": 2,
+   "look": "a lantern keeper kid in a green tunic holding a glass lantern with warm yellow-orange glass full of yellow fireflies (the lantern has no pink and no purple)",
+   "weapon": "firefly lantern",
+   "source": {
+    "image": "art/explore/skins/raw/common.png",
+    "box": [
+     1138,
+     280,
+     1308,
+     608
+    ]
+   }
+  },
+  {
+   "code": "K07",
+   "id": "jackalope-rider",
+   "name": "Jackalope Rider",
+   "rarity": "rare",
+   "class": "Tamer",
+   "health": 4,
+   "attack": 7,
+   "look": "a jackalope rider kid in a brown explorer outfit with a backpack, with a small jackalope companion: a brown rabbit with two clearly visible small branching deer antlers on its head",
+   "weapon": "jackalope",
+   "source": {
+    "image": "art/explore/skins/raw/rare.png",
+    "box": [
+     75,
+     280,
+     288,
+     608
+    ]
+   },
+   "pet": "a small brown jackalope (a rabbit with two clearly visible branching deer antlers) at the kid's feet in front, about knee high"
+  },
+  {
+   "code": "K08",
+   "id": "cactus-paladin",
+   "name": "Cactus Paladin",
+   "rarity": "rare",
+   "class": "Knight",
+   "health": 8,
+   "attack": 3,
+   "look": "a kid paladin in green armor shaped like a saguaro cactus, a pink flower on the helmet, an open face, a round wooden shield, and a short sword",
+   "weapon": "short sword",
+   "source": {
+    "image": "art/explore/skins/raw/rare.png",
+    "box": [
+     315,
+     280,
+     495,
+     608
+    ]
+   }
+  },
+  {
+   "code": "K09",
+   "id": "owl-scout",
+   "name": "Owl Night Scout",
+   "rarity": "rare",
+   "class": "Archer",
+   "health": 3,
+   "attack": 8,
+   "look": "a night scout kid in a brown owl-feather cloak with an owl-ear hood and big goggles, with a small bow",
+   "weapon": "bow",
+   "source": {
+    "image": "art/explore/skins/raw/rare.png",
+    "box": [
+     505,
+     280,
+     668,
+     608
+    ]
+   }
+  },
+  {
+   "code": "K10",
+   "id": "mushroom-alchemist",
+   "name": "Mushroom Alchemist",
+   "rarity": "rare",
+   "class": "Mage",
+   "health": 5,
+   "attack": 6,
+   "look": "an alchemist kid with a big red white-spotted mushroom cap hat, a red scarf, and two potion bottles (green and purple)",
+   "weapon": "potion bottle",
+   "source": {
+    "image": "art/explore/skins/raw/rare.png",
+    "box": [
+     685,
+     280,
+     848,
+     608
+    ]
+   }
+  },
+  {
+   "code": "K11",
+   "id": "eagle-glider",
+   "name": "Eagle Glider",
+   "rarity": "rare",
+   "class": "Rogue",
+   "health": 6,
+   "attack": 5,
+   "look": "a HUMAN kid with a normal human face and nose (NO beak, NOT a bird) in a brown aviator cap with flight goggles, wearing a brown feathered wing-shaped cape that hangs folded on the back like a cape",
+   "weapon": "wing cape",
+   "source": {
+    "image": "art/explore/skins/raw/rare.png",
+    "box": [
+     845,
+     280,
+     1132,
+     608
+    ]
+   }
+  },
+  {
+   "code": "K12",
+   "id": "glacier-knight",
+   "name": "Glacier Knight",
+   "rarity": "rare",
+   "class": "Knight",
+   "health": 7,
+   "attack": 4,
+   "look": "a kid knight in pale blue ice-crystal armor with an open face and an ice sword",
+   "weapon": "ice sword",
+   "source": {
+    "image": "art/explore/skins/raw/rare.png",
+    "box": [
+     1060,
+     280,
+     1290,
+     608
+    ],
+    "mask": [
+     [
+      1060,
+      280,
+      1140,
+      520
+     ]
+    ]
+   }
+  },
+  {
+   "code": "K13",
+   "id": "hot-dog-knight",
+   "name": "Hot Dog Knight",
+   "rarity": "epic",
+   "class": "Knight",
+   "health": 7,
+   "attack": 4,
+   "look": "a kid in a hot dog costume (bun and sausage with a mustard line, face showing) with a mustard-yellow sword and a round bun shield",
+   "weapon": "mustard sword",
+   "source": {
+    "image": "art/explore/skins/raw/epic.png",
+    "box": [
+     40,
+     280,
+     268,
+     608
+    ]
+   }
+  },
+  {
+   "code": "K14",
+   "id": "pizza-wizard",
+   "name": "Pizza Wizard",
+   "rarity": "epic",
+   "class": "Mage",
+   "health": 3,
+   "attack": 8,
+   "look": "a kid wizard in a purple robe and pointed hat with pizza slice patterns, holding a staff topped by a pizza",
+   "weapon": "pizza staff",
+   "source": {
+    "image": "art/explore/skins/raw/epic.png",
+    "box": [
+     268,
+     280,
+     492,
+     608
+    ],
+    "mask": [
+     [
+      268,
+      390,
+      300,
+      608
+     ]
+    ]
+   }
+  },
+  {
+   "code": "K15",
+   "id": "skateboard-bard",
+   "name": "Skateboard Bard",
+   "rarity": "epic",
+   "class": "Rogue",
+   "health": 5,
+   "attack": 6,
+   "look": "a kid in a blue hoodie vest and jeans with a red electric guitar held by the neck and a skateboard",
+   "weapon": "electric guitar",
+   "source": {
+    "image": "art/explore/skins/raw/epic.png",
+    "box": [
+     505,
+     280,
+     720,
+     608
+    ]
+   }
+  },
+  {
+   "code": "K16",
+   "id": "robot-cowboy",
+   "name": "Robot Cowboy",
+   "rarity": "epic",
+   "class": "Archer",
+   "health": 10,
+   "attack": 1,
+   "look": "a small friendly gray robot kid with a smiling screen-like face, a brown cowboy hat, a red bandana, and a rope lasso",
+   "weapon": "lasso",
+   "source": {
+    "image": "art/explore/skins/raw/epic.png",
+    "box": [
+     735,
+     280,
+     905,
+     608
+    ]
+   }
+  },
+  {
+   "code": "K17",
+   "id": "dino-kid",
+   "name": "Dino Kid",
+   "rarity": "epic",
+   "class": "Brawler",
+   "health": 6,
+   "attack": 5,
+   "look": "a kid in a green dinosaur costume with the dino head as a hood, a cream belly, and a tail",
+   "weapon": "dino tail",
+   "source": {
+    "image": "art/explore/skins/raw/epic.png",
+    "box": [
+     930,
+     280,
+     1110,
+     608
+    ]
+   }
+  },
+  {
+   "code": "K18",
+   "id": "astronaut-ranger",
+   "name": "Astronaut Ranger",
+   "rarity": "epic",
+   "class": "Archer",
+   "health": 4,
+   "attack": 7,
+   "look": "a kid astronaut in a white space suit with a gold star badge and a clear round fishbowl helmet. The kid's face is clearly visible through the clear glass, with warm skin, rosy cheeks, brown hair, and a happy smile (not gray, not faded). Holds a small toy ray gun",
+   "weapon": "ray gun",
+   "source": {
+    "image": "art/explore/skins/raw/epic.png",
+    "box": [
+     1130,
+     280,
+     1295,
+     608
+    ]
+   },
+   "drop": {
+    "attackA": [
+     4
+    ]
+   }
+  },
+  {
+   "code": "K19",
+   "id": "aurora-druid",
+   "name": "Aurora Druid",
+   "rarity": "legendary",
+   "class": "Mage",
+   "health": 7,
+   "attack": 5,
+   "look": "a kid druid in a cloak with green, teal, and pink aurora colors and gold trim, brown tunic and boots",
+   "weapon": "aurora cloak",
+   "source": {
+    "image": "art/explore/skins/raw/legendary.png",
+    "box": [
+     85,
+     280,
+     262,
+     608
+    ]
+   }
+  },
+  {
+   "code": "K20",
+   "id": "golden-bigfoot",
+   "name": "Golden Bigfoot Cub",
+   "rarity": "legendary",
+   "class": "Brawler",
+   "health": 9,
+   "attack": 3,
+   "look": "the same young Bigfoot cub as the reference, but with shining golden fur and a few gold armor pieces. A small chubby baby Bigfoot with a round baby face, big cute eyes, no beard, no chin hair, no muscles, kid height. Holds a short golden club",
+   "weapon": "golden club",
+   "source": {
+    "image": "art/explore/prototype/raw/bigfoot.png"
+   }
+  },
+  {
+   "code": "K21",
+   "id": "storm-chaser",
+   "name": "Storm Chaser",
+   "rarity": "legendary",
+   "class": "Mage",
+   "health": 3,
+   "attack": 9,
+   "look": "a storm chaser kid in a yellow hooded raincoat and yellow boots, holding a wooden staff with a metal lightning-bolt tip",
+   "weapon": "lightning rod staff",
+   "source": {
+    "image": "art/explore/skins/raw/legendary.png",
+    "box": [
+     485,
+     280,
+     670,
+     608
+    ]
+   }
+  },
+  {
+   "code": "K22",
+   "id": "moon-wolf-hunter",
+   "name": "Moon Wolf Hunter",
+   "rarity": "legendary",
+   "class": "Tamer",
+   "health": 5,
+   "attack": 7,
+   "look": "a hunter kid in a silver wolf-head hood with a crescent moon mark, a green tunic, with a small silver wolf pup companion",
+   "weapon": "wolf pup",
+   "source": {
+    "image": "art/explore/skins/raw/legendary.png",
+    "box": [
+     722,
+     280,
+     895,
+     608
+    ]
+   },
+   "pet": "a small silver wolf pup at the kid's feet in front, about knee high"
+  },
+  {
+   "code": "K23",
+   "id": "starfall-archer",
+   "name": "Starfall Archer",
+   "rarity": "legendary",
+   "class": "Archer",
+   "health": 4,
+   "attack": 8,
+   "look": "an archer kid in a dark blue starry cape with gold trim and a golden bow",
+   "weapon": "golden bow",
+   "source": {
+    "image": "art/explore/skins/raw/legendary.png",
+    "box": [
+     900,
+     280,
+     1115,
+     608
+    ]
+   }
+  },
+  {
+   "code": "K24",
+   "id": "redwood-guardian",
+   "name": "Redwood Guardian",
+   "rarity": "legendary",
+   "class": "Knight",
+   "health": 8,
+   "attack": 4,
+   "look": "a human kid with a clearly human face in open-faced armor carved from red bark, a helmet like a tree stump ring, small gold leaves on the shoulders, a wooden shield, and a short wooden sword",
+   "weapon": "wooden sword",
+   "source": {
+    "image": "art/explore/skins/raw/legendary.png",
+    "box": [
+     1115,
+     280,
+     1310,
+     608
+    ]
+   }
+  }
+ ]
+}
