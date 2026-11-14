@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+      # npm 11.5 crashes on the vitest peer set; 11.6.2 installs it cleanly.
+      - run: npm install -g npm@11.6.2
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run types:check
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: check
+    runs-on: ubuntu-latest
+    concurrency:
+      group: deploy
+      cancel-in-progress: false
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - name: Skip without a Cloudflare token
+        if: env.CLOUDFLARE_API_TOKEN == ''
+        run: echo "::notice::No CLOUDFLARE_API_TOKEN secret, so the deploy is skipped."
+      - if: env.CLOUDFLARE_API_TOKEN != ''
+        uses: actions/checkout@v7.0.1
+      - if: env.CLOUDFLARE_API_TOKEN != ''
+        uses: actions/setup-node@v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+      - if: env.CLOUDFLARE_API_TOKEN != ''
+        run: npm install -g npm@11.6.2 && npm ci
+      - if: env.CLOUDFLARE_API_TOKEN != ''
+        run: npm run db:migrate:remote
+      - if: env.CLOUDFLARE_API_TOKEN != ''
+        run: npm run deploy
