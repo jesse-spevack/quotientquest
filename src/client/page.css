@@ -14,11 +14,6 @@ body {
   height: 100dvh;
 }
 
-/* Art is drawn at 4x, so a smooth browser downscale of the 1920x1080 canvas stays crisp; pixelated CSS jags it. */
-#game canvas {
-  image-rendering: auto !important;
-}
-
 #rotate-hint {
   display: none;
   position: fixed;
@@ -27,7 +22,10 @@ body {
   bottom: max(24px, env(safe-area-inset-bottom));
   margin: 0;
   color: #dbe8f5;
-  font: 800 18px/1.4 "Nunito", "Segoe UI", sans-serif;
+  font:
+    800 18px / 1.4 "Nunito",
+    "Segoe UI",
+    sans-serif;
   text-align: center;
 }
 
