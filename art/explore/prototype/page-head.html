@@ -1,0 +1,75 @@
+<title>Quotient Quest Demo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@700;800&display=swap">
+<style>
+  /* Layout: one 16:9 game stage, centered on swamp night, scaled to fit any screen. Single dark look by choice. */
+  :root {
+    --night: #0b1420;
+    --night-2: #13233a;
+    --moon: #dff4ff;
+    --glow: #7fe3ff;
+    --ink: #a9bfd6;
+    --font-display: "Lilita One", "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
+    --font-body: "Nunito", "Segoe UI", system-ui, sans-serif;
+    color-scheme: dark;
+  }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: radial-gradient(120% 90% at 50% 30%, var(--night-2), var(--night) 70%);
+    background-color: var(--night);
+    color: var(--ink);
+    font-family: var(--font-body);
+    box-sizing: border-box;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    overflow: hidden;
+  }
+  #stage {
+    width: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #stage canvas {
+    border-radius: 14px;
+    box-shadow: 0 0 0 1px rgba(127, 227, 255, 0.18), 0 24px 60px rgba(0, 0, 0, 0.55);
+    touch-action: manipulation;
+  }
+  #turn {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: center;
+    color: var(--ink);
+  }
+  @media (orientation: landscape) { #turn { display: none; } }
+  #loading {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-family: var(--font-display);
+    font-size: 28px;
+    color: var(--moon);
+    letter-spacing: 0.02em;
+    pointer-events: none;
+  }
+  #loading[hidden] { display: none; }
+</style>
+
+<div id="stage"></div>
+<p id="turn">Turn your phone sideways for a bigger game.</p>
+<div id="loading">Loading the swamp...</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.90.0/phaser.min.js"></script>

@@ -2,7 +2,8 @@
 """Builds the files of the demo page from the art: sprite sheets, faces, and layers in web/.
 
 Usage: python3 build.py
-Each sheet is one row of 160x160 frames: idle, attack, hurt, defeat. sheets.json gives the first frame
+It also writes web/index.html from page-head.html and game.js.
+Each sheet is a grid of 160x160 frames, 10 in a row, in the ORDER below. sheets.json gives the first frame
 and the count of each animation. The idle frames lose any pixel outside the outline of frame 0
 (grown by 4 pixels): the model drew sparkles there that the game does not want.
 A hurt frame with a magic swirl (much more cyan than frame 0) is left out.
@@ -14,8 +15,11 @@ from scipy import ndimage
 
 HERE = pathlib.Path(__file__).parent
 WEB = HERE / "web"
-ORDER = ["idle", "attack", "hurt", "defeat"]
+ORDER = ["idle", "attack", "hurt", "defeat", "skyshot", "pound", "leap", "throw"]
+KEEP = {("bigfoot", "idle"): [0, 1]}  # the later Bigfoot idle frames lose the club runes, so only the calm start stays
+STRIP_GLOW = {"bigfoot"}  # sprites whose swirls float off the club: cyan must touch the body or the club
 FRAME = 160
+COLUMNS = 10
 FACES = {"ranger": (11, 1), "bigfoot": (33, 9)}  # the top left of a 36x36 head square in each sprite
 
 
@@ -55,6 +59,24 @@ def drop_effects(images, limit=1.6):
     return [image for image in images if cyan(image) <= base * limit]
 
 
+def strip_glow(image, reach=2):
+    """Clears cyan pixels more than `reach` pixels from any pixel that is not cyan: swirls, not runes."""
+    pixels = np.array(image)
+    r, g, b, a = (pixels[..., i].astype(int) for i in range(4))
+    cyan = (a > 0) & (g > 120) & (b > 140) & (r < 140)
+    body = (a > 0) & ~cyan
+    near = ndimage.binary_dilation(body, structure=np.ones((3, 3)), iterations=reach)
+    pixels[cyan & ~near] = 0
+    # A glow halo hugs the club edge. Runes sit inside the club, so peel cyan that touches clear pixels.
+    for _ in range(2):
+        a = pixels[..., 3]
+        r, g, b = (pixels[..., i].astype(int) for i in range(3))
+        cyan = (a > 0) & (g > 120) & (b > 140) & (r < 140)
+        edge = ndimage.binary_dilation(a == 0, structure=np.ones((3, 3)))
+        pixels[cyan & edge] = 0
+    return drop_specks(Image.fromarray(pixels))
+
+
 def main():
     WEB.mkdir(exist_ok=True)
     layout = {}
@@ -64,16 +86,22 @@ def main():
             images = frames(name, anim)
             if not images:
                 continue
+            if (name, anim) in KEEP:
+                images = [images[i] for i in KEEP[(name, anim)]]
             if anim == "idle":
                 images = keep_inside(images)
+            if name in STRIP_GLOW:
+                images = [strip_glow(image) for image in images]
             if anim == "hurt":
                 images = drop_effects(images)
             images = [drop_specks(image) for image in images]
             layout[name][anim] = [len(row), len(images)]
             row += images
-        sheet = Image.new("RGBA", (FRAME * len(row), FRAME))
+        # A grid of 10 columns keeps the sheet under 4096 pixels: the texture limit of many phones and tablets.
+        rows = (len(row) + COLUMNS - 1) // COLUMNS
+        sheet = Image.new("RGBA", (FRAME * COLUMNS, FRAME * rows))
         for number, image in enumerate(row):
-            sheet.alpha_composite(image, (number * FRAME, 0))
+            sheet.alpha_composite(image, (number % COLUMNS * FRAME, number // COLUMNS * FRAME))
         sheet.save(WEB / f"{name}.png", optimize=True)
         sprite = Image.open(HERE / "sprites" / f"{name}.png")
         box = sprite.getbbox()
@@ -83,6 +111,9 @@ def main():
     (WEB / "sheets.json").write_text(json.dumps(layout) + "\n")
     for layer in ("far", "mid", "near"):
         shutil.copy(HERE / "layers" / f"{layer}.webp", WEB / f"{layer}.webp")
+    # The page: the head part, then game.js inline (the artifact page cannot load a script file of its own).
+    page = (HERE / "page-head.html").read_text() + "<script>\n" + (HERE / "game.js").read_text() + "</script>\n"
+    (WEB / "index.html").write_text(page)
 
 
 if __name__ == "__main__":
