@@ -38,7 +38,7 @@ async function expectInsideScreen(page: Page) {
   }));
   expect(sizes.scrollWidth).toBe(sizes.clientWidth);
   for (const box of await page
-    .locator(".qq-panel, .qq-card")
+    .locator(".qq-panel, .qq-card, .qq-panel-head, .qq-panel-foot")
     .evaluateAll((items) => items.map((item) => item.getBoundingClientRect().toJSON()))) {
     expect(box.left).toBeGreaterThanOrEqual(0);
     expect(box.top).toBeGreaterThanOrEqual(0);
@@ -171,6 +171,8 @@ test("every account screen fits the screen", async ({ browser }) => {
   await expect(page.locator(".qq-devices li")).toHaveCount(1);
   await expectInsideScreen(page);
   await shot(page, "8-settings");
+  await expect(page.locator(".qq-panel-head").getByRole("button", { name: "Close" })).toBeInViewport({ ratio: 1 });
+  await expect(page.getByRole("button", { name: "Add a device" })).toBeInViewport({ ratio: 1 });
   await page.getByRole("button", { name: "Add a device" }).click();
   await expect(page.locator(".qq-qr svg")).toBeVisible();
   await expectInsideScreen(page);

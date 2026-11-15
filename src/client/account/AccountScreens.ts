@@ -1,7 +1,7 @@
 import { renderSVG } from "uqr";
 import { type DeviceView, type ErrorCode, LINK_PATH } from "../../shared/account";
 import { api } from "./api";
-import { button, el, message } from "./dom";
+import { button, type Child, el, message } from "./dom";
 import { skinPreview } from "./skinPreview";
 
 const MAX_NAME_REROLLS = 5;
@@ -54,25 +54,40 @@ export class AccountScreens {
     panel?.querySelector<HTMLElement>("[autofocus]")?.focus();
   }
 
-  private panel(title: string, ...children: (Node | string | null | false)[]) {
-    return el("section", { class: "qq-panel", "aria-label": title }, el("h2", {}, title), ...children);
+  private panel(
+    title: string,
+    body: Child[],
+    options: { actions?: HTMLElement; close?: () => void; heading?: "h1" | "h2" } = {},
+  ) {
+    return el(
+      "section",
+      { class: "qq-panel", "aria-label": title },
+      el(
+        "header",
+        { class: "qq-panel-head" },
+        el(options.heading ?? "h2", {}, title),
+        options.close && button("Close", options.close, "quiet"),
+      ),
+      el("div", { class: "qq-panel-body" }, ...body),
+      options.actions && el("footer", { class: "qq-panel-foot" }, options.actions),
+    );
   }
 
   private welcome(note: string | null = null) {
     this.show(
-      el(
-        "section",
-        { class: "qq-panel qq-welcome", "aria-label": "Quotient Quest" },
-        el("h1", {}, "Quotient Quest"),
-        el("p", { class: "qq-lead" }, "Math battles in the swamp"),
-        message(note, "note"),
-        el(
-          "div",
-          { class: "qq-actions" },
-          button("Play", () => this.pickName(), "primary"),
-          button("I have a secret code", () => this.enterCode()),
-          button("Scan from my other device", () => this.linkFromOtherDevice()),
-        ),
+      this.panel(
+        "Quotient Quest",
+        [el("p", { class: "qq-lead" }, "Math battles in the swamp"), message(note, "note")],
+        {
+          heading: "h1",
+          actions: el(
+            "div",
+            { class: "qq-actions" },
+            button("Play", () => this.pickName(), "primary"),
+            button("I have a secret code", () => this.enterCode()),
+            button("Scan from my other device", () => this.linkFromOtherDevice()),
+          ),
+        },
       ),
     );
   }
@@ -90,21 +105,25 @@ export class AccountScreens {
     this.show(
       this.panel(
         "Pick your name",
-        el("p", {}, "Tap the name you like."),
-        message(error),
-        el(
-          "div",
-          { class: "qq-names" },
-          ...result.data.names.map((name) => button(name, () => choose(name), "primary")),
-        ),
-        el(
-          "div",
-          { class: "qq-row" },
-          button("Back", () => this.welcome(), "quiet"),
-          rerollsLeft > 0
-            ? button(`New names (${rerollsLeft})`, () => this.pickName(rerollsLeft - 1))
-            : el("p", { class: "qq-hint" }, "Pick one of these names."),
-        ),
+        [
+          el("p", {}, "Tap the name you like."),
+          message(error),
+          el(
+            "div",
+            { class: "qq-names" },
+            ...result.data.names.map((name) => button(name, () => choose(name), "primary")),
+          ),
+        ],
+        {
+          actions: el(
+            "div",
+            { class: "qq-row" },
+            button("Back", () => this.welcome(), "quiet"),
+            rerollsLeft > 0
+              ? button(`New names (${rerollsLeft})`, () => this.pickName(rerollsLeft - 1))
+              : el("p", { class: "qq-hint" }, "Pick one of these names."),
+          ),
+        },
       ),
     );
   }
@@ -113,14 +132,12 @@ export class AccountScreens {
     this.show(
       this.panel(
         `Hi, ${playerName}!`,
-        el("p", {}, "This is your secret code. Write it down. You need it to play on another device."),
-        this.codeView(secretCode),
-        el("p", { class: "qq-hint" }, "Keep it secret. Anyone with the code can play as you."),
-        el(
-          "div",
-          { class: "qq-actions" },
-          button("I wrote it down", () => this.askRemember(playerName), "primary"),
-        ),
+        [
+          el("p", {}, "This is your secret code. Write it down. You need it to play on another device."),
+          this.codeView(secretCode),
+          el("p", { class: "qq-hint" }, "Keep it secret. Anyone with the code can play as you."),
+        ],
+        { actions: button("I wrote it down", () => this.askRemember(playerName), "primary") },
       ),
     );
   }
@@ -141,13 +158,15 @@ export class AccountScreens {
     this.show(
       this.panel(
         "Remember this device?",
-        el("p", {}, "Say yes on your own device. Say no on a shared device, like a school iPad."),
-        el(
-          "div",
-          { class: "qq-row" },
-          button("Yes, remember", () => answer(true), "primary"),
-          button("No", () => answer(false)),
-        ),
+        [el("p", {}, "Say yes on your own device. Say no on a shared device, like a school iPad.")],
+        {
+          actions: el(
+            "div",
+            { class: "qq-row" },
+            button("Yes, remember", () => answer(true), "primary"),
+            button("No", () => answer(false)),
+          ),
+        },
       ),
     );
   }
@@ -175,14 +194,10 @@ export class AccountScreens {
     this.show(
       this.panel(
         "Type your secret code",
-        el("p", {}, "It has 3 words and a number."),
-        this.form(input, submit, error),
-        el(
-          "div",
-          { class: "qq-row" },
-          button("Back", () => this.welcome(), "quiet"),
-          button("Play", submit, "primary"),
-        ),
+        [el("p", {}, "It has 3 words and a number."), this.form(input, submit, error)],
+        {
+          actions: this.backAndPlay(submit),
+        },
       ),
     );
   }
@@ -210,20 +225,26 @@ export class AccountScreens {
     this.show(
       this.panel(
         "Add this device",
-        el(
-          "ol",
-          { class: "qq-steps" },
-          el("li", {}, "On your other device, open Settings, then tap Add a device."),
-          el("li", {}, "Scan the picture with this device's camera. Or type the 6‑letter code here."),
-        ),
-        this.form(input, submit, error),
-        el(
-          "div",
-          { class: "qq-row" },
-          button("Back", () => this.welcome(), "quiet"),
-          button("Play", submit, "primary"),
-        ),
+        [
+          el(
+            "ol",
+            { class: "qq-steps" },
+            el("li", {}, "On your other device, open Settings, then tap Add a device."),
+            el("li", {}, "Scan the picture with this device's camera. Or type the 6‑letter code here."),
+          ),
+          this.form(input, submit, error),
+        ],
+        { actions: this.backAndPlay(submit) },
       ),
+    );
+  }
+
+  private backAndPlay(submit: () => void) {
+    return el(
+      "div",
+      { class: "qq-row" },
+      button("Back", () => this.welcome(), "quiet"),
+      button("Play", submit, "primary"),
     );
   }
 
@@ -243,7 +264,7 @@ export class AccountScreens {
   }
 
   private async redeemLinkToken(token: string) {
-    this.show(this.panel("Adding this device", el("p", {}, "One moment.")));
+    this.show(this.panel("Adding this device", [el("p", {}, "One moment.")]));
     const result = await api.redeemLink({ token });
     if (result.ok) this.askRemember(result.data.player.name);
     else this.welcome(errorMessage(result.error));
@@ -278,44 +299,38 @@ export class AccountScreens {
     if (!devices.ok) {
       if (devices.error === "signed_out") return this.signedOut();
       return this.show(
-        this.panel(
-          "Settings",
-          message(errorMessage(devices.error)),
-          el(
-            "div",
-            { class: "qq-row" },
-            button("Close", () => this.playerCard(), "quiet"),
-            button("Try again", () => this.settings(), "primary"),
-          ),
-        ),
+        this.panel("Settings", [message(errorMessage(devices.error))], {
+          close: () => this.playerCard(),
+          actions: button("Try again", () => this.settings(), "primary"),
+        }),
       );
     }
 
     this.show(
       this.panel(
         "Settings",
-        message(note, "note"),
-        el("h3", {}, "Your secret code"),
-        el("p", {}, "Use it to play on another device."),
-        el(
-          "div",
-          { class: "qq-row" },
-          button("Show my code", () => this.showCode()),
-          button("Make a new code", () => this.confirmNewCode()),
-        ),
-        el("h3", {}, "Your devices"),
-        el("ul", { class: "qq-devices" }, ...devices.data.devices.map((device) => this.deviceRow(device))),
-        el(
-          "div",
-          { class: "qq-row" },
-          button("Add a device", () => this.addDevice(), "primary"),
-          button("Sign out here", () => this.signOutHere()),
-        ),
-        el(
-          "div",
-          { class: "qq-actions" },
-          button("Close", () => this.playerCard(), "quiet"),
-        ),
+        [
+          message(note, "note"),
+          el("h3", {}, "Your secret code"),
+          el("p", { class: "qq-tall-only" }, "Use it to play on another device."),
+          el(
+            "div",
+            { class: "qq-row" },
+            button("Show my code", () => this.showCode()),
+            button("Make a new code", () => this.confirmNewCode()),
+          ),
+          el("h3", {}, "Your devices"),
+          el("ul", { class: "qq-devices" }, ...devices.data.devices.map((device) => this.deviceRow(device))),
+        ],
+        {
+          close: () => this.playerCard(),
+          actions: el(
+            "div",
+            { class: "qq-row" },
+            button("Add a device", () => this.addDevice(), "primary"),
+            button("Sign out here", () => this.signOutHere()),
+          ),
+        },
       ),
     );
   }
@@ -351,13 +366,11 @@ export class AccountScreens {
     this.show(
       this.panel(
         "Your secret code",
-        this.codeView(result.data.secretCode),
-        el("p", { class: "qq-hint" }, "Keep it secret. Anyone with the code can play as you."),
-        el(
-          "div",
-          { class: "qq-actions" },
-          button("Done", () => this.settings(), "primary"),
-        ),
+        [
+          this.codeView(result.data.secretCode),
+          el("p", { class: "qq-hint" }, "Keep it secret. Anyone with the code can play as you."),
+        ],
+        { actions: button("Done", () => this.settings(), "primary") },
       ),
     );
   }
@@ -369,26 +382,23 @@ export class AccountScreens {
       this.show(
         this.panel(
           "Your new secret code",
-          this.codeView(result.data.secretCode),
-          el("p", {}, "Write it down. Your old code does not work now."),
-          el(
-            "div",
-            { class: "qq-actions" },
-            button("I wrote it down", () => this.settings(), "primary"),
-          ),
+          [this.codeView(result.data.secretCode), el("p", {}, "Write it down. Your old code does not work now.")],
+          { actions: button("I wrote it down", () => this.settings(), "primary") },
         ),
       );
     };
     this.show(
       this.panel(
         "Make a new code?",
-        el("p", {}, "Your old code stops working. Devices that are signed in stay signed in."),
-        el(
-          "div",
-          { class: "qq-row" },
-          button("Cancel", () => this.settings(), "quiet"),
-          button("Make a new code", make, "primary"),
-        ),
+        [el("p", {}, "Your old code stops working. Devices that are signed in stay signed in.")],
+        {
+          actions: el(
+            "div",
+            { class: "qq-row" },
+            button("Cancel", () => this.settings(), "quiet"),
+            button("Make a new code", make, "primary"),
+          ),
+        },
       ),
     );
   }
@@ -405,24 +415,22 @@ export class AccountScreens {
     this.show(
       this.panel(
         "Add a device",
-        el(
-          "div",
-          { class: "qq-link" },
-          qr,
+        [
           el(
             "div",
-            {},
-            el("p", {}, "Scan this picture with the camera of the new device."),
-            el("p", {}, "No camera? On the new device, tap Scan from my other device, and type this code:"),
-            el("p", { class: "qq-code qq-short" }, shortCode),
-            countdown,
+            { class: "qq-link" },
+            qr,
+            el(
+              "div",
+              {},
+              el("p", {}, "Scan this picture with the camera of the new device."),
+              el("p", {}, "No camera? On the new device, tap Scan from my other device, and type this code:"),
+              el("p", { class: "qq-code qq-short" }, shortCode),
+              countdown,
+            ),
           ),
-        ),
-        el(
-          "div",
-          { class: "qq-actions" },
-          button("Done", () => this.settings(), "primary"),
-        ),
+        ],
+        { actions: button("Done", () => this.settings(), "primary") },
       ),
     );
 

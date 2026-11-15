@@ -1,6 +1,7 @@
 :root {
   --qq-night: #0b1420;
   --qq-panel: rgb(14 28 44 / 0.95);
+  --qq-panel-solid: rgb(14 28 44);
   --qq-line: rgb(219 232 245 / 0.18);
   --qq-moonlight: #dbe8f5;
   --qq-muted: #9fb3c8;
@@ -44,16 +45,46 @@
 }
 
 .qq-panel {
+  display: flex;
+  flex-direction: column;
   width: min(560px, 100%);
   max-height: 100%;
+  overflow: hidden;
+}
+
+.qq-panel-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 24px 8px;
+}
+
+.qq-panel-body {
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 20px 24px 24px;
+  padding: 0 24px 4px;
+  /* Shadows show at an edge only while more content scrolls past it. */
+  background:
+    linear-gradient(var(--qq-panel-solid) 40%, transparent) center top / 100% 28px no-repeat local,
+    linear-gradient(transparent, var(--qq-panel-solid) 60%) center bottom / 100% 28px no-repeat local,
+    radial-gradient(farthest-side at 50% 0, rgb(0 0 0 / 0.55), transparent) center top / 100% 12px no-repeat scroll,
+    radial-gradient(farthest-side at 50% 100%, rgb(0 0 0 / 0.55), transparent) center bottom / 100% 12px no-repeat
+    scroll;
+}
+
+.qq-panel-foot {
+  flex: none;
+  display: grid;
+  padding: 12px 24px 20px;
 }
 
 .qq-panel h1,
 .qq-panel h2 {
-  margin: 0 0 8px;
+  margin: 0;
   color: var(--qq-firefly);
   font:
     400 32px / 1.1 "Lilita One",
@@ -62,6 +93,7 @@
 }
 
 .qq-panel h1 {
+  flex: 1;
   font-size: 48px;
   text-align: center;
 }
@@ -152,6 +184,16 @@
 .qq-button:active {
   transform: translateY(2px);
   box-shadow: none;
+}
+
+.qq-panel-head .qq-button {
+  min-height: 44px;
+  margin: -6px -10px -6px 0;
+}
+
+.qq-panel-foot > .qq-actions,
+.qq-panel-foot > .qq-row {
+  margin-top: 0;
 }
 
 .qq-form {
@@ -332,8 +374,16 @@ body.qq-panel-open #rotate-hint {
 }
 
 @media (max-height: 460px) {
-  .qq-panel {
-    padding: 14px 20px 16px;
+  .qq-panel-head {
+    padding: 12px 20px 6px;
+  }
+
+  .qq-panel-body {
+    padding: 0 20px 2px;
+  }
+
+  .qq-panel-foot {
+    padding: 10px 20px 14px;
   }
 
   .qq-panel h1 {
@@ -344,13 +394,34 @@ body.qq-panel-open #rotate-hint {
     font-size: 28px;
   }
 
+  .qq-panel p {
+    margin-bottom: 8px;
+  }
+
+  .qq-panel h3 {
+    margin-top: 12px;
+  }
+
+  .qq-tall-only {
+    display: none;
+  }
+
+  .qq-devices li {
+    padding: 4px 0;
+  }
+
   .qq-actions,
   .qq-names,
   .qq-row {
-    margin-top: 10px;
+    gap: 8px;
+    margin-top: 8px;
   }
 
   .qq-names {
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+
+  .qq-button {
+    min-height: 48px;
   }
 }

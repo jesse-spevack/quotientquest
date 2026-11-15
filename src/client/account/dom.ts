@@ -1,4 +1,4 @@
-type Child = Node | string | null | false;
+export type Child = Node | string | null | false | undefined;
 type Attributes = Record<string, string | boolean | ((event: Event) => void)>;
 
 export function el<K extends keyof HTMLElementTagNameMap>(

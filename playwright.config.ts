@@ -34,6 +34,16 @@ export default defineConfig({
       },
     },
     {
+      name: "small-phone",
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 667, height: 375 },
+        deviceScaleFactor: 2,
+        hasTouch: true,
+        isMobile: true,
+      },
+    },
+    {
       name: "phone",
       use: {
         ...devices["Desktop Chrome"],
