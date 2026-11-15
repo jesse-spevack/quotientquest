@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["es2024"],
+    "types": ["@cloudflare/vitest-plugin/types"]
+  },
+  "include": [
+    "./**/*.ts",
+    "../src/server/**/*.ts",
+    "../src/shared/**/*.ts",
+    "../src/client/layout.ts",
+    "../src/client/theme.ts"
+  ]
+}

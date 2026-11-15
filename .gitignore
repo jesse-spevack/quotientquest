@@ -1,5 +1,11 @@
+node_modules/
+dist/
+.wrangler/
+.dev.vars*
+.env*
+*.log
 .DS_Store
+__pycache__/
 art/explore/skins/cards/sheet.png
 art/explore/gallery/index.html
 art/explore/gallery/sheets/
-__pycache__/

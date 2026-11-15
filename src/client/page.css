@@ -1,0 +1,36 @@
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: #0b1420;
+  overflow: hidden;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#game {
+  width: 100vw;
+  height: 100dvh;
+}
+
+#rotate-hint {
+  display: none;
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: max(24px, env(safe-area-inset-bottom));
+  margin: 0;
+  color: #dbe8f5;
+  font:
+    800 18px / 1.4 "Nunito",
+    "Segoe UI",
+    sans-serif;
+  text-align: center;
+}
+
+@media (orientation: portrait) and (max-width: 600px) {
+  #rotate-hint {
+    display: block;
+  }
+}
