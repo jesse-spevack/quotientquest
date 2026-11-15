@@ -1,11 +1,13 @@
 import { env } from "cloudflare:workers";
 import { describe, expect, it } from "vitest";
+import { DAILY_FAILED_GUESSES, recordFailedGuess } from "../src/server/accounts/guessGuard";
 import type {
   DeviceLinkResponse,
   DevicesResponse,
   MeResponse,
   SecretCodeResponse,
   SignInResponse,
+  SignUpResponse,
 } from "../src/shared/account";
 import { call, newAddress, sessionFrom, signUp } from "./accountApi";
 
@@ -40,16 +42,30 @@ describe("sign-up", () => {
     expect(await response.json()).toEqual({ error: "name_taken" });
   });
 
-  it("limits sign-ups from one address", async () => {
+  it("lets a classroom of 30 kids behind one address sign up and sign in", async () => {
+    const address = newAddress();
+    const codes: string[] = [];
+    for (let kid = 0; kid < 30; kid++) {
+      const { names } = await (await call("/api/names")).json<{ names: string[] }>();
+      const response = await call("/api/players", { body: { name: names[0] }, address });
+      expect(response.status).toBe(201);
+      codes.push((await response.json<SignUpResponse>()).secretCode);
+    }
+    for (const code of codes) {
+      expect((await call("/api/sign-in", { body: { code }, address })).status).toBe(200);
+    }
+  });
+
+  it("limits sign-ups from one address to 40 a minute", async () => {
     const address = newAddress();
     const statuses: number[] = [];
-    for (let i = 0; i < 6; i++) {
-      const names = await (await call("/api/names")).json<{ names: string[] }>();
-      statuses.push((await call("/api/players", { body: { name: names.names[0] }, address })).status);
+    for (let i = 0; i < 41; i++) {
+      const { names } = await (await call("/api/names")).json<{ names: string[] }>();
+      statuses.push((await call("/api/players", { body: { name: names[0] }, address })).status);
     }
 
-    expect(statuses.slice(0, 5).every((status) => status === 201 || status === 409)).toBe(true);
-    expect(statuses[5]).toBe(429);
+    expect(statuses.slice(0, 40).every((status) => status === 201 || status === 409)).toBe(true);
+    expect(statuses[40]).toBe(429);
   });
 });
 
@@ -72,15 +88,35 @@ describe("sign-in with the secret code", () => {
     expect(await response.json()).toEqual({ error: "wrong_code" });
   });
 
-  it("asks a fast guesser to wait", async () => {
+  it("asks a fast guesser to wait after 60 tries in a minute", async () => {
     const address = newAddress();
     const statuses: number[] = [];
-    for (let i = 0; i < 11; i++) {
+    for (let i = 0; i < 61; i++) {
       statuses.push((await call("/api/sign-in", { body: { code: "acorn acorn acorn 00" }, address })).status);
     }
 
-    expect(statuses.slice(0, 10)).toEqual(Array(10).fill(401));
-    expect(statuses[10]).toBe(429);
+    expect(statuses.slice(0, 60)).toEqual(Array(60).fill(401));
+    expect(statuses[60]).toBe(429);
+  });
+
+  it("stops an address after 300 wrong guesses in a day, even with the right code", async () => {
+    const { secretCode } = await signUp();
+    const address = newAddress();
+    const guesser = new Request("https://example.com/api/sign-in", { headers: { "CF-Connecting-IP": address } });
+    for (let i = 0; i < DAILY_FAILED_GUESSES; i++) await recordFailedGuess(env, guesser);
+
+    expect((await call("/api/sign-in", { body: { code: secretCode }, address })).status).toBe(429);
+    expect((await call("/api/link/redeem", { body: { shortCode: "ABCDEF" }, address })).status).toBe(429);
+    expect((await call("/api/sign-in", { body: { code: secretCode } })).status).toBe(200);
+  });
+
+  it("counts wrong link codes as wrong guesses", async () => {
+    const address = newAddress();
+    await call("/api/link/redeem", { body: { shortCode: "ABCDEF" }, address });
+
+    const rows = await env.DB.prepare("SELECT SUM(count) AS total FROM failed_guesses").first<number>("total");
+    expect(rows).toBeGreaterThan(0);
+    expect(JSON.stringify(await env.DB.prepare("SELECT key FROM failed_guesses").all())).not.toContain("203.0.113");
   });
 });
 

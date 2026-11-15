@@ -10,6 +10,7 @@ import {
 } from "../../shared/account";
 import { clientKey, fail, isCrossSite, json, readJsonObject } from "../http";
 import { deviceName } from "./deviceName";
+import { hasGuessesLeft, recordFailedGuess } from "./guessGuard";
 import { createDeviceLink, useDeviceLink } from "./linkTokens";
 import { isPlayerName, offerNames } from "./names";
 import { createPlayer, findPlayerByCode, type Player, readSecretCode, replaceSecretCode } from "./players";
@@ -104,11 +105,13 @@ async function signIn(request: Request, env: Env): Promise<Response> {
   const body = await readJsonObject(request);
   if (!body || typeof body.code !== "string") return fail("bad_request", 400);
 
-  const { success } = await env.SIGN_IN_LIMITER.limit({ key: clientKey(request) });
-  if (!success) return fail("too_many_tries", 429);
+  if (!(await mayGuess(env, request))) return fail("too_many_tries", 429);
 
   const player = await findPlayerByCode(env, body.code);
-  if (!player) return fail("wrong_code", 401);
+  if (!player) {
+    await recordFailedGuess(env, request);
+    return fail("wrong_code", 401);
+  }
 
   return json({ player: { name: player.name } } satisfies SignInResponse, {
     cookie: await signInCookie(env, request, body, player),
@@ -121,14 +124,16 @@ async function redeemLink(request: Request, env: Env): Promise<Response> {
   const shortCode = typeof body?.shortCode === "string" ? body.shortCode : undefined;
   if (!body || (!token && !shortCode)) return fail("bad_request", 400);
 
-  const { success } = await env.SIGN_IN_LIMITER.limit({ key: clientKey(request) });
-  if (!success) return fail("too_many_tries", 429);
+  if (!(await mayGuess(env, request))) return fail("too_many_tries", 429);
 
   const playerId = await useDeviceLink(env, { token, shortCode });
   const player = playerId
     ? await env.DB.prepare("SELECT id, name FROM players WHERE id = ?").bind(playerId).first<Player>()
     : null;
-  if (!player) return fail("wrong_link", 401);
+  if (!player) {
+    await recordFailedGuess(env, request);
+    return fail("wrong_link", 401);
+  }
 
   return json({ player: { name: player.name } } satisfies SignInResponse, {
     cookie: await signInCookie(env, request, body, player),
@@ -174,6 +179,11 @@ async function signInCookie(
   const name = deviceName(request.headers.get("User-Agent") ?? "", body.touchMac === true);
   const token = await startSession(env, player.id, name);
   return sessionCookie(token, false);
+}
+
+async function mayGuess(env: Env, request: Request): Promise<boolean> {
+  const { success } = await env.SIGN_IN_LIMITER.limit({ key: clientKey(request) });
+  return success && (await hasGuessesLeft(env, request));
 }
 
 function signedIn(route: SignedInRoute): Route {
