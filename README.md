@@ -58,7 +58,7 @@ Use Node 24 and npm 11.6.2 or later. npm 11.5 crashes when it installs the test 
 - Run the tests: `npm test`.
 - Check the types: `npm run typecheck`.
 - Check the lint and the format: `npm run lint`. Fix the format with `npm run format`.
-- Run the browser tests: `npx playwright install chromium`, then `npx playwright test`. They start the dev server, and they need `.dev.vars`. To test the live site, set `PLAYWRIGHT_BASE_URL`.
+- Run the browser tests: `npx playwright install chromium`, then `npx playwright test`. They build the game and start `vite preview`, and they need `.dev.vars`. To test the live site, set `PLAYWRIGHT_BASE_URL`.
 - After a change to `wrangler.jsonc`, make the Worker types again: `npm run types`.
 
 GitHub Actions runs all these checks and a build on each pull request.
