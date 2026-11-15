@@ -1,0 +1,106 @@
+<title>Quotient Quest Skins</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito+Sans:opsz,wght@6..12,400;6..12,700;6..12,800&display=swap">
+<style>
+/* Layout: a swamp-night skin shop. Cards sit on a dark boardwalk-brown wall, grouped by rarity shelf. A sticky tray collects the picks. Dark by choice: the art is night art. */
+:root {
+  --wall: #121619;       /* swamp night, blue-green bias */
+  --shelf: #1c2226;      /* card back */
+  --line: #2f383d;
+  --paper: #eef0ea;      /* text */
+  --muted: #9aa6a3;
+  --moss: #6fd39b;       /* picked state */
+  --firefly: #ffd84a;    /* the one accent */
+  --display: "Bungee", Impact, "Arial Black", sans-serif;
+  --body: "Nunito Sans", system-ui, -apple-system, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--wall); color: var(--paper); font-family: var(--body); font-size: 16px; line-height: 1.5; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 32px 120px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 44px; }
+h1, h2 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(30px, 6vw, 50px); line-height: 1.05; }
+h1 span { color: var(--firefly); }
+p { margin: 0; max-width: 66ch; }
+.intro { display: grid; gap: 12px; }
+.muted { color: var(--muted); }
+.tier { display: grid; gap: 16px; }
+.tier-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; border-bottom: 2px solid var(--tier); padding-bottom: 8px; }
+.tier-head h2 { font-size: 24px; color: var(--tier); }
+.tier-head p { color: var(--muted); }
+.grid { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 620px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 960px) { .grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+.card { all: unset; cursor: pointer; display: grid; grid-template-rows: auto auto; background: var(--shelf); border: 2px solid var(--line); border-top: 4px solid var(--tier); border-radius: 6px; overflow: hidden; position: relative; min-width: 0; }
+.card:focus-visible { outline: 3px solid var(--firefly); outline-offset: 3px; }
+.card[aria-pressed="true"] { border-color: var(--moss); border-top-color: var(--moss); }
+.art { aspect-ratio: 3 / 4; max-width: 100%; background: #0b0e10; display: grid; place-items: end center; overflow: hidden; }
+.art img { width: 100%; height: 100%; object-fit: contain; object-position: center bottom; display: block; }
+.info { display: grid; gap: 6px; padding: 10px 10px 12px; }
+.name-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.name { font-weight: 800; font-size: 15px; line-height: 1.25; min-width: 0; }
+.code { font-weight: 800; font-size: 12px; letter-spacing: 0.08em; color: var(--tier); font-variant-numeric: tabular-nums; }
+.stat { display: grid; grid-template-columns: 52px 1fr 18px; gap: 6px; align-items: center; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.bar i { display: block; height: 100%; border-radius: 3px; }
+.hp i { background: #ff6b6b; }
+.atk i { background: var(--firefly); }
+.stat b { color: var(--paper); text-align: right; }
+.badge { position: absolute; top: 8px; right: 8px; background: var(--moss); color: var(--wall); font-weight: 800; font-size: 12px; padding: 2px 8px; border-radius: 99px; }
+.card[aria-pressed="false"] .badge { display: none; }
+.lineups { display: grid; gap: 14px; }
+.lineups h2 { font-size: 24px; }
+.shots { display: grid; gap: 10px; grid-template-columns: 1fr; }
+@media (min-width: 760px) { .shots { grid-template-columns: 1fr 1fr; } }
+.shots figure { margin: 0; display: grid; gap: 4px; }
+.shots img { display: block; width: 100%; max-width: 100%; height: auto; aspect-ratio: 1376 / 768; border-radius: 4px; border: 2px solid var(--line); }
+.shots figcaption { font-size: 14px; color: var(--muted); }
+.tray { position: fixed; left: 0; right: 0; bottom: 0; background: var(--shelf); border-top: 1px solid var(--line); padding-block: 12px calc(12px + env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.tray-in { max-width: 1120px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; }
+#picked { font-weight: 700; min-width: 0; overflow-wrap: anywhere; }
+#copy { font: inherit; font-weight: 800; background: var(--firefly); color: var(--wall); border: 0; border-radius: 6px; padding: 10px 18px; cursor: pointer; }
+#copy:disabled { opacity: 0.4; cursor: default; }
+#copy:focus-visible { outline: 3px solid var(--paper); outline-offset: 2px; }
+</style>
+
+<div class="wrap">
+  <header class="intro">
+    <h1>Quotient Quest <span>skins</span></h1>
+    <p>Here are 24 new skins in 4 rarity groups. Each skin has its own Health and Attack. Tap the skins you like, then copy the codes and send them to Claude.</p>
+    <p class="muted">Health plus Attack is 10 points for a common skin, 11 for rare and epic, and 12 for legendary. A legendary skin is a bit stronger, but each skin still has a weak side. These numbers are a first draft.</p>
+  </header>
+%%TIERS%%
+  <section class="lineups">
+    <h2>The full lineups</h2>
+    <div class="shots">
+%%SHOTS%%
+    </div>
+  </section>
+</div>
+<div class="tray"><div class="tray-in"><span id="picked">No skin picked yet.</span><button id="copy" type="button" disabled>Copy codes</button></div></div>
+
+<script>
+const picks = new Set();
+const out = document.getElementById('picked');
+const copy = document.getElementById('copy');
+function render() {
+  const codes = [...picks].sort();
+  out.textContent = codes.length ? 'Picked: ' + codes.join(', ') : 'No skin picked yet.';
+  copy.disabled = !codes.length;
+  copy.textContent = 'Copy codes';
+}
+document.querySelectorAll('.card').forEach(button => button.addEventListener('click', () => {
+  const code = button.dataset.code;
+  picks.has(code) ? picks.delete(code) : picks.add(code);
+  button.setAttribute('aria-pressed', picks.has(code));
+  render();
+}));
+copy.addEventListener('click', () => {
+  const text = 'Quotient Quest skins: ' + [...picks].sort().join(', ');
+  navigator.clipboard.writeText(text).then(() => { copy.textContent = 'Copied'; }).catch(() => {
+    const range = document.createRange(); range.selectNodeContents(out);
+    const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range);
+    copy.textContent = 'Select and copy';
+  });
+});
+</script>

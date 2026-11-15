@@ -1,0 +1,189 @@
+<title>Quotient Quest Skin Gallery</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito+Sans:opsz,wght@6..12,400;6..12,700;6..12,800&display=swap">
+<style>
+/* Layout: a swamp-night skin shop. One dark look on purpose: the game is always at night.
+   Rarity bands stack down the page; each band holds a wrap grid of live sprite cards. */
+:root {
+  --night: #0f1720;
+  --deck: #182330;
+  --plank: #22303f;
+  --moss: #9fb3a6;
+  --text: #eef2ea;
+  --firefly: #ffd75e;
+  --line: #2f4152;
+  --display: "Bungee", "Impact", system-ui, sans-serif;
+  --body: "Nunito Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--night); color: var(--text); font-family: var(--body); font-size: 16px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 64px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+h1 { font-family: var(--display); font-weight: 400; font-size: clamp(28px, 6vw, 48px); line-height: 1.05; margin: 0; text-wrap: balance; }
+h1 span { color: var(--firefly); }
+.lead { max-width: 64ch; margin: 0; color: var(--text); }
+.note { max-width: 64ch; margin: 0; color: var(--moss); font-size: 15px; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.filters button {
+  font: 700 14px var(--body); color: var(--text); background: var(--deck); border: 1px solid var(--line);
+  border-radius: 999px; padding: 6px 14px; cursor: pointer;
+}
+.filters button[aria-pressed="true"] { background: var(--firefly); color: var(--night); border-color: var(--firefly); }
+.filters button:focus-visible, .card button:focus-visible, canvas:focus-visible { outline: 2px solid var(--firefly); outline-offset: 2px; }
+section { display: flex; flex-direction: column; gap: 14px; }
+.band { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; border-bottom: 2px solid var(--rarity); padding-bottom: 8px; }
+.band h2 { font-family: var(--display); font-weight: 400; font-size: 24px; margin: 0; color: var(--rarity); letter-spacing: 0.02em; }
+.band p { margin: 0; color: var(--moss); font-size: 14px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 14px; }
+.card {
+  background: var(--deck); border: 1px solid var(--line); border-top: 4px solid var(--rarity); border-radius: 10px;
+  display: flex; flex-direction: column; min-width: 0;
+}
+.stage { display: flex; justify-content: center; background: radial-gradient(ellipse at 50% 92%, #26384a 0 34%, transparent 35%), linear-gradient(#152230, #101a24); border-radius: 6px 6px 0 0; }
+canvas { image-rendering: pixelated; image-rendering: crisp-edges; display: block; cursor: pointer; }
+.info { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.name { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.name strong { font-weight: 800; font-size: 16px; line-height: 1.2; }
+.name code { font: 700 12px var(--body); color: var(--moss); letter-spacing: 0.06em; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; background: var(--plank); color: var(--text); }
+.chip.rar { color: var(--rarity); }
+.stat { display: grid; grid-template-columns: 52px 1fr 18px; align-items: center; gap: 8px; font-size: 13px; color: var(--moss); font-variant-numeric: tabular-nums; }
+.bar { height: 6px; background: var(--plank); border-radius: 3px; overflow: hidden; }
+.bar i { display: block; height: 100%; border-radius: 3px; }
+.hp i { background: #ff6b6b; } .atk i { background: var(--firefly); }
+.stat b { color: var(--text); text-align: right; }
+.moves { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-top: auto; }
+.moves button {
+  font: 700 13px var(--body); color: var(--text); background: var(--plank); border: 1px solid var(--line);
+  border-radius: 6px; padding: 6px 4px; cursor: pointer;
+}
+.moves button:hover { border-color: var(--rarity); }
+.moves button.on { background: var(--rarity); color: var(--night); border-color: var(--rarity); }
+@media (prefers-reduced-motion: reduce) { .moves button { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:12px">
+    <h1>Quotient Quest <span>Skin Gallery</span></h1>
+    <p class="lead">Here are __COUNT__ skins as real game sprites. Each skin moves in its idle loop. Tap a skin or a button to see its attack, its power attack, a hit, and a fall.</p>
+    <p class="note">Each skin has a fight class. The class gives the skin its kind of moves. The game adds the glow, the arrows, and the magic in code, in the colors of each skin. Health and Attack are a first draft.</p>
+  </header>
+  <nav class="filters" aria-label="Show a fight class" id="filters"></nav>
+  <div id="bands" style="display:flex;flex-direction:column;gap:32px"></div>
+</div>
+
+<script>
+const DATA = __MANIFEST__;
+const BLURB = { starter: "The first 6 heroes. Health plus Attack is 10.", common: "Health plus Attack is 10.", rare: "Health plus Attack is 11.", epic: "Pop-culture fun. Health plus Attack is 11.", legendary: "Health plus Attack is 12." };
+const MOVES = [["attackA", "Attack"], ["attackB", "Power"], ["hurt", "Hit"], ["defeat", "Fall"]];
+const FRAME = DATA.frame, COLS = DATA.columns;
+const players = [];
+
+function crispSize(card) {
+  const dpr = window.devicePixelRatio || 1;
+  const room = Math.min(card.clientWidth || 168, 320) * dpr;
+  const k = Math.max(1, Math.floor(room / FRAME));
+  return { device: FRAME * k, css: FRAME * k / dpr };
+}
+
+function makeCard(id, skin) {
+  const card = document.createElement("article");
+  card.className = "card";
+  card.dataset.cls = skin.class;
+  card.style.setProperty("--rarity", DATA.rarities[skin.rarity]);
+  const pct = v => (v * 10) + "%";
+  card.innerHTML = `
+    <div class="stage"><canvas tabindex="0" aria-label="${skin.name}, tap to play the next move"></canvas></div>
+    <div class="info">
+      <div class="name"><strong>${skin.name}</strong><code>${skin.code}</code></div>
+      <div class="chips"><span class="chip">${skin.class}</span><span class="chip rar">${skin.rarity}</span></div>
+      <div class="stat hp"><span>Health</span><span class="bar"><i style="width:${pct(skin.health)}"></i></span><b>${skin.health}</b></div>
+      <div class="stat atk"><span>Attack</span><span class="bar"><i style="width:${pct(skin.attack)}"></i></span><b>${skin.attack}</b></div>
+      <div class="moves">${MOVES.filter(([a]) => skin.animations[a]).map(([a, label]) => `<button type="button" data-anim="${a}">${label}</button>`).join("")}</div>
+    </div>`;
+  const canvas = card.querySelector("canvas");
+  const ctx = canvas.getContext("2d");
+  const img = new Image();
+  img.src = skin.sheet;
+  const p = { skin, canvas, ctx, img, anim: "idle", frame: 0, next: 0, card };
+  players.push(p);
+  const play = anim => {
+    p.anim = anim; p.frame = 0; p.next = 0;
+    card.querySelectorAll(".moves button").forEach(b => b.classList.toggle("on", b.dataset.anim === anim));
+  };
+  let cycle = 0;
+  const step = () => { const list = MOVES.filter(([a]) => skin.animations[a]); play(list[cycle % list.length][0]); cycle++; };
+  canvas.addEventListener("click", step);
+  canvas.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); step(); } });
+  card.querySelectorAll(".moves button").forEach(b => b.addEventListener("click", () => play(b.dataset.anim)));
+  p.play = play;
+  return card;
+}
+
+function sizeAll() {
+  for (const p of players) {
+    const s = crispSize(p.card);
+    p.canvas.width = s.device; p.canvas.height = s.device;
+    p.canvas.style.width = s.css + "px"; p.canvas.style.height = s.css + "px";
+    p.ctx.imageSmoothingEnabled = false;
+    p.next = 0;
+  }
+}
+
+function tick(now) {
+  for (const p of players) {
+    if (!p.img.complete || now < p.next) continue;
+    const a = p.skin.animations[p.anim];
+    const index = a.start + p.frame;
+    const sx = (index % COLS) * FRAME, sy = Math.floor(index / COLS) * FRAME;
+    p.ctx.clearRect(0, 0, p.canvas.width, p.canvas.height);
+    p.ctx.drawImage(p.img, sx, sy, FRAME, FRAME, 0, 0, p.canvas.width, p.canvas.height);
+    p.frame++;
+    if (p.frame >= a.count) {
+      p.frame = 0;
+      if (p.anim !== "idle") {
+        if (p.anim === "defeat") { p.frame = a.count - 1; p.next = now + 900; p.anim = "defeat-hold"; }
+        else p.play("idle");
+      }
+    }
+    if (p.anim === "defeat-hold") { p.play("idle"); p.next = now + 900; continue; }
+    p.next = now + (p.anim === "idle" ? 140 : 95);
+  }
+  requestAnimationFrame(tick);
+}
+
+const bands = document.getElementById("bands");
+for (const rarity of Object.keys(DATA.rarities)) {
+  const ids = Object.keys(DATA.skins).filter(id => DATA.skins[id].rarity === rarity);
+  if (!ids.length) continue;
+  const section = document.createElement("section");
+  section.style.setProperty("--rarity", DATA.rarities[rarity]);
+  section.innerHTML = `<div class="band"><h2>${rarity[0].toUpperCase() + rarity.slice(1)}</h2><p>${BLURB[rarity] || ""}</p></div><div class="grid"></div>`;
+  const grid = section.querySelector(".grid");
+  ids.forEach(id => grid.appendChild(makeCard(id, DATA.skins[id])));
+  bands.appendChild(section);
+}
+
+const classes = ["All", ...new Set(Object.values(DATA.skins).map(s => s.class))].sort((a, b) => a === "All" ? -1 : b === "All" ? 1 : a.localeCompare(b));
+const filters = document.getElementById("filters");
+classes.forEach(c => {
+  const b = document.createElement("button");
+  b.type = "button"; b.textContent = c; b.setAttribute("aria-pressed", c === "All");
+  b.addEventListener("click", () => {
+    filters.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+    document.querySelectorAll(".card").forEach(card => { card.hidden = !(c === "All" || card.dataset.cls === c); });
+    document.querySelectorAll("#bands section").forEach(s => { s.hidden = !s.querySelector(".card:not([hidden])"); });
+    sizeAll();
+  });
+  filters.appendChild(b);
+});
+
+sizeAll();
+window.addEventListener("resize", sizeAll);
+requestAnimationFrame(tick);
+</script>
