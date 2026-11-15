@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { AccountScreens } from "../account/AccountScreens";
 import { fitPixelSprite, fitText, onLayout } from "../display";
 import { DESIGN_HEIGHT, DESIGN_WIDTH } from "../layout";
 import { connectToHub, type ServerStatus } from "../serverLink";
@@ -10,6 +11,7 @@ const FEET_ROW = 156 / 160;
 
 export class TitleScene extends Phaser.Scene {
   private statusText!: Phaser.GameObjects.Text;
+  private disconnect: (() => void) | null = null;
 
   constructor() {
     super("title");
@@ -66,15 +68,48 @@ export class TitleScene extends Phaser.Scene {
       for (const text of [title, subtitle, this.statusText]) fitText(text, layout);
     });
 
-    const disconnect = connectToHub((status) => this.showStatus(status));
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN, disconnect);
+    const root = document.getElementById("ui");
+    if (!root) throw new Error("The page needs a #ui element");
+    let signedIn = false;
+    const account = new AccountScreens(root, {
+      onPanel: (open) => {
+        title.setVisible(!open);
+        this.statusText.setVisible(!open);
+        subtitle.setVisible(!open && !signedIn);
+      },
+      onSignedIn: () => {
+        signedIn = true;
+        subtitle.setVisible(false);
+        this.joinHub(account);
+      },
+      onSignedOut: () => {
+        signedIn = false;
+        this.leaveHub();
+      },
+    });
+    account.start();
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.leaveHub());
+  }
+
+  private joinHub(account: AccountScreens) {
+    this.leaveHub();
+    this.disconnect = connectToHub((status) => {
+      if (status.state === "signed-out") account.signedOut();
+      else this.showStatus(status);
+    });
+  }
+
+  private leaveHub() {
+    this.disconnect?.();
+    this.disconnect = null;
+    if (this.statusText.active) this.statusText.setText("");
   }
 
   private showStatus(status: ServerStatus) {
     if (status.state === "connecting") {
       this.statusText.setText("Server: connecting").setColor(colors.muted);
     } else if (status.state === "connected") {
-      this.statusText.setText("Server: connected").setColor(colors.online);
+      this.statusText.setText(`Connected as ${status.playerName}`).setColor(colors.online);
     } else {
       this.statusText.setText("Server: offline").setColor(colors.offline);
     }

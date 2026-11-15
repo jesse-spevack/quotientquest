@@ -1,4 +1,5 @@
 import "@fontsource/lilita-one/400.css";
+import "@fontsource/nunito/600.css";
 import "@fontsource/nunito/800.css";
 import Phaser from "phaser";
 import { initialLayout, watchWindow } from "./display";
