@@ -17,6 +17,11 @@
       "migrations_dir": "migrations"
     }
   ],
+  "ratelimits": [
+    { "name": "SIGN_IN_LIMITER", "namespace_id": "4201", "simple": { "limit": 10, "period": 60 } },
+    { "name": "SIGN_UP_LIMITER", "namespace_id": "4202", "simple": { "limit": 5, "period": 60 } }
+  ],
+  "secrets": { "required": ["CODE_PEPPER", "CODE_KEY"] },
   "durable_objects": {
     "bindings": [{ "name": "HUB_WORLD", "class_name": "HubWorld" }]
   },
