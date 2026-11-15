@@ -5,6 +5,8 @@ const liveUrl = process.env.PLAYWRIGHT_BASE_URL;
 
 export default defineConfig({
   testDir: "e2e",
+  // Each test runs several Phaser games with software WebGL, which is slow on CI runners.
+  timeout: 90_000,
   fullyParallel: false,
   workers: 1,
   reporter: process.env.CI ? "github" : "list",
@@ -12,7 +14,7 @@ export default defineConfig({
   webServer: liveUrl
     ? undefined
     : {
-        command: `npm run db:migrate:local && npx vite dev --port ${PORT} --strictPort`,
+        command: `npm run db:migrate:local && npm run build && npx vite preview --port ${PORT} --strictPort`,
         url: `http://localhost:${PORT}/api/health`,
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,

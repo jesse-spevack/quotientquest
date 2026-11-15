@@ -67,7 +67,7 @@ async function newDeviceLink(page: Page): Promise<DeviceLinkResponse> {
 
 test("a player signs up, adds devices three ways, and signs one out", async ({ browser }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "The full flow runs once; every screen size gets the screens test.");
-  test.setTimeout(120_000);
+  test.setTimeout(240_000);
 
   const first = await openGame(browser);
   const { name, code } = await signUp(first.page);
@@ -94,6 +94,8 @@ test("a player signs up, adds devices three ways, and signs one out", async ({ b
   await scanned.page.getByRole("button", { name: "Yes, remember" }).click();
   await expect(scanned.page.locator(".qq-card-name")).toHaveText(name);
   await expect(scanned.page).toHaveURL(/\/$/);
+  expect(scanned.errors).toEqual([]);
+  await scanned.context.close();
 
   await first.page.getByRole("button", { name: "Done" }).click();
   await first.page.getByRole("button", { name: "Close" }).click();
@@ -105,6 +107,8 @@ test("a player signs up, adds devices three ways, and signs one out", async ({ b
   await typed.page.getByRole("button", { name: "Play" }).click();
   await typed.page.getByRole("button", { name: "No", exact: true }).click();
   await expect(typed.page.locator(".qq-card-name")).toHaveText(name);
+  expect(typed.errors).toEqual([]);
+  await typed.context.close();
 
   await first.page.getByRole("button", { name: "Done" }).click();
   await expect(first.page.locator(".qq-devices li")).toHaveCount(4);
@@ -118,7 +122,7 @@ test("a player signs up, adds devices three ways, and signs one out", async ({ b
   expect((await (await phone.page.request.get("/api/me")).json()).player).toBeNull();
   expect((await phone.page.request.post("/api/link")).status()).toBe(401);
 
-  for (const game of [first, phone, scanned, typed]) {
+  for (const game of [first, phone]) {
     expect(game.errors).toEqual([]);
     await game.context.close();
   }
