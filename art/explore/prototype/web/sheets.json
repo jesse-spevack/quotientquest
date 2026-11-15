@@ -1,0 +1,1 @@
+{"ranger": {"idle": [0, 9], "attack": [9, 9], "hurt": [18, 4], "defeat": [22, 9], "skyshot": [31, 9]}, "bigfoot": {"idle": [0, 2], "attack": [2, 9], "hurt": [11, 4], "defeat": [15, 9], "pound": [24, 9], "leap": [33, 11], "throw": [44, 9]}}

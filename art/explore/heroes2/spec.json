@@ -1,0 +1,27 @@
+{
+  "model": "gemini-3-pro-image",
+  "body": "Character look: cute, rounded, toy-like kid heroes with a stylized animated-movie look. They are slim and about 3 heads tall, with real arms and legs and kid proportions. They are not chunky, not bean-shaped, and not pill-shaped. All of them are kids about 10 years old: no beards, no adults. Big expressive eyes, friendly faces, bright colors. Fantasy adventure outfits with an American wilderness flavor. No Native American sacred imagery: no headdresses, no totem poles. Original characters only, not any known game character, mascot, or brand. The young Bigfoot is a cub: small, round cute face, soft fur, no beard, no big muscles, the same height as the other kids.",
+  "world": "The place is a giant redwood forest at golden hour, with huge red tree trunks, ferns, and light rays through the mist. American setting, not East Asian.",
+  "battle": "A screenshot of a 2D side-view video game battle between two kid fantasy heroes. Both are mid-attack and face each other, one on the left and one on the right. On the left, a kid ranger archer in a green hooded cloak and leather vest shoots a glowing arrow from a glowing bow. On the right, a young Bigfoot warrior kid, a small friendly furry creature in fur and wood armor, swings a big wooden club with glowing runes. Simple game UI: two health bars at the top, one for each fighter, each with a small portrait of its fighter. At the bottom, a panel with the math question \"7 × 8 = ?\" and 4 answer buttons: 54, 56, 63, 48. All 4 buttons look the same; no button is lit or picked. No name labels. Cool, exciting, and fun for a 10-year-old. Weapon effects are bright energy sparks and streaks, not fire, water, rock, or wind magic. No text other than the UI. No logos, no brands.",
+  "lineup": "A character select screen of a video game: 6 kid fantasy heroes stand in a row, side by side, all facing the viewer and doing confident, happy poses. From left to right: 1 a ranger archer in a green hooded cloak with a glowing bow, 2 a moss druid with a small antler crown and a cloak of leaves, 3 a knight in shiny copper armor with a round shield, 4 a wizard in a starry blue robe with a staff topped by a pinecone, 5 a crystal miner with a headlamp helmet and a glowing crystal pickaxe, 6 a young Bigfoot warrior, a small friendly furry creature in fur and wood armor. All 6 are kids, slim, about 3 heads tall, the same height. Fun for a 10-year-old. No text, no UI, no logos, no brands.",
+  "variants": [
+    {
+      "id": "H1",
+      "name": "3D heroes in a painted forest",
+      "style": "Art style: the characters are smooth 3D-rendered toy-like figures with soft shading. They stand in an HD-2D scene: a painterly world with soft 3D-looking depth, warm volumetric light, glow, bloom, and depth-of-field blur in the foreground and background.",
+      "note": "The characters need 3D models. We can also render the 3D models into sprite sheets for the 2D engine."
+    },
+    {
+      "id": "H2",
+      "name": "Pixel heroes with soft light",
+      "style": "Art style: HD-2D. The characters are crisp, detailed pixel-art sprites. They are placed in a scene with soft 3D-looking depth, warm volumetric light, glow, bloom, and depth-of-field blur in the foreground and background.",
+      "note": "This style works with the 2D engine as it is. Pixel sprites are fast to draw and animate."
+    },
+    {
+      "id": "H3",
+      "name": "Full 3D fantasy world",
+      "style": "Art style: full stylized 3D. Both the characters and the world are bright, smooth, toy-like 3D renders with clean shapes, soft shadows, and cheerful color, like an animated adventure movie.",
+      "note": "The characters and the world need 3D models. This is the most work, but it gives the most polish."
+    }
+  ]
+}

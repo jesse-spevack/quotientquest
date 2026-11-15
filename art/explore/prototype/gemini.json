@@ -1,0 +1,43 @@
+{
+  "model": "gemini-3-pro-image",
+  "style": "Keep the exact art style of the reference images: HD-2D, crisp pixel-art detail, soft moonlit light, rich color. No text, no letters, no game UI, no health bars, no buttons, no labels, no watermark.",
+  "images": {
+    "ranger": {
+      "aspect": "1:1",
+      "references": [
+        "../heroes2/raw/H2-lineup.png",
+        "../backgrounds/raw/B4.png"
+      ],
+      "prompt": "Draw ONLY the ranger archer kid from these references (green hood and cloak, brown leather tunic, quiver of arrows, glowing teal bow), as one game sprite. Full body, head to feet, centered, filling about 80 percent of the image height. Pure side view, facing RIGHT, in a calm ready stance: feet apart on flat ground, bow held in front in the left hand, not drawing. Slim kid proportions, about 3 heads tall, cute face. Clean pixel art with a dark outline and moonlit blue rim light. The background is ONE flat pure magenta color #FF00FF everywhere, with no shadow, no ground, no glow halo, no sparkles, no gradient."
+    },
+    "bigfoot": {
+      "aspect": "1:1",
+      "references": [
+        "raw/cub-crop.png",
+        "../heroes2/raw/H2-lineup.png"
+      ],
+      "prompt": "Draw ONLY the young Bigfoot cub from the first reference image, as one game sprite. Keep it exactly that cute kid: big round head, a small round smiling face with NO beard and NO chin fur, short chubby body the same height as a 10-year-old kid, shaggy reddish-brown fur, simple fur and leather armor with a belt buckle, a wooden club with glowing teal runes. Full body, head to feet, centered, filling about 80 percent of the image height. Pure side view, facing RIGHT, in a calm ready stance: feet apart on flat ground, the club held up at the shoulder. Clean pixel art with a dark outline and moonlit blue rim light, the same pixel style as the second reference. The background is ONE flat pure magenta color #FF00FF everywhere, with no shadow, no ground, no glow halo, no sparkles, no gradient."
+    },
+    "far": {
+      "aspect": "16:9",
+      "references": [
+        "../backgrounds/raw/B4.png"
+      ],
+      "prompt": "Paint ONLY the far background layer of this bayou swamp at night, for a parallax game scene: the night sky, the big full moon, distant cypress trees with Spanish moss in soft haze, the calm water with the moon reflection across the lower half. Impressionistic, painterly, soft brush texture, deep blues and teals. No characters, no boardwalk, no near tree trunks, no mushrooms, no fireflies. The full frame is filled, edge to edge."
+    },
+    "mid": {
+      "aspect": "16:9",
+      "references": [
+        "../backgrounds/raw/B4.png"
+      ],
+      "prompt": "Paint ONLY the middle parallax layer of this bayou swamp at night: big dark cypress tree trunks with roots and hanging Spanish moss at the far LEFT edge and the far RIGHT edge, framing the scene, with clusters of glowing blue and teal mushrooms on the roots. Pixel-art detail, moonlit rim light. Everything else, the whole center and the top between the trees, is ONE flat pure magenta color #FF00FF: no sky, no moon, no water, no fireflies, no glow halo, no characters, no boardwalk."
+    },
+    "near": {
+      "aspect": "16:9",
+      "references": [
+        "../backgrounds/raw/B4.png"
+      ],
+      "prompt": "Paint ONLY the near foreground layer of this bayou swamp at night: the old wooden boardwalk seen from the side, running straight across the FULL width of the image, its flat top surface at about 70 percent of the image height, with wooden posts below it going down to the bottom edge, a little moss on the planks, and a few roots and small glowing mushrooms in the two bottom corners. Crisp pixel-art detail, moonlit rim light. Everything above the boardwalk and between the posts is ONE flat pure magenta color #FF00FF: no sky, no water, no trees, no fireflies, no glow halo, no characters."
+    }
+  }
+}

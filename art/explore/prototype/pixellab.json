@@ -1,0 +1,36 @@
+{
+  "sprites": [
+    "ranger",
+    "bigfoot"
+  ],
+  "pixel_hint": "clean game sprite, crisp dark outline, keep the flat magenta background flat",
+  "canvas": 160,
+  "frames": {
+    "idle": 8,
+    "attack": 8,
+    "hurt": 6,
+    "defeat": 8,
+    "skyshot": 8,
+    "pound": 8,
+    "leap": 10,
+    "throw": 8
+  },
+  "animations": {
+    "ranger": {
+      "idle": "idle breathing in a ready stance, cloak sways a little",
+      "attack": "draws the glowing bow and shoots an arrow to the right, then lowers the bow",
+      "hurt": "takes a hit: the whole body jolts backward to the left, the head snaps back, then stands ready again. Plain body motion only, no magic, no glow trail, no particles, no effects",
+      "defeat": "falls back and sits down on the ground, dizzy",
+      "skyshot": "raises the bow to aim high up at the sky, draws the string back, shoots an arrow straight up, then lowers the bow. Plain body motion only: no magic, no glow trail, no swirl, no particles, no effects."
+    },
+    "bigfoot": {
+      "idle": "calm idle breathing in a ready stance, the club rests on the shoulder, the face stays calm with a closed-mouth smile. Plain body motion only: no magic, no glow trail, no swirl, no particles, no effects.",
+      "attack": "steps forward and swings the club down to the right, then steps back",
+      "hurt": "takes a hit: the whole body jolts backward to the left, the head snaps back, then stands ready again. Plain body motion only, no magic, no glow trail, no particles, no effects",
+      "defeat": "falls back and sits down on the ground, dizzy",
+      "pound": "lifts the club high over the head with both hands, then slams it straight down onto the ground in front, knees bent, then stands up again. Plain body motion only: no magic, no glow trail, no swirl, no particles, no effects.",
+      "leap": "crouches low, springs up into the air with the club raised overhead, then lands crouched and smashes the club down in front. Plain body motion only: no magic, no glow trail, no swirl, no particles, no effects.",
+      "throw": "drops the club, lifts a big round grey boulder over the head with both hands, throws it forward to the right, then picks the club up again. Plain body motion only: no magic, no glow trail, no swirl, no particles, no effects."
+    }
+  }
+}

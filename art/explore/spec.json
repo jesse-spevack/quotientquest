@@ -1,0 +1,36 @@
+{
+  "style": "fantasy East Asian adventure world, vibrant saturated colors, fun and bold like a modern indie game, pixel art",
+  "pixellab": {
+    "view": "side",
+    "direction": "east",
+    "outline": "single color black outline",
+    "shading": "detailed shading",
+    "detail": "highly detailed"
+  },
+  "arenas": {
+    "a-temple": "misty mountain temple at dawn, tiered pagoda roofs on a cliff, pink cherry blossom trees, soft golden sunrise light, layered mountains fading into mist, open flat stone courtyard in the foreground for a battle",
+    "b-bamboo": "deep green bamboo forest with a calm river and an arched stone bridge, sunbeams through the leaves, fireflies, wide flat grassy riverbank in the foreground for a battle",
+    "c-sky": "floating sky islands at sunset with glowing paper lanterns drifting in the air, waterfalls falling off the islands, orange and purple clouds, wide flat floating stone platform in the foreground for a battle"
+  },
+  "arena_styles": {
+    "1": {"prompt_style": "rd_core__painterly", "width": 512, "height": 288, "extra": "impressionistic painterly brush strokes, dreamy soft light"},
+    "2": {"prompt_style": "rd_plus__environment", "width": 384, "height": 216, "extra": "crisp clean pixel art, sharp detail"}
+  },
+  "skins": {
+    "d-monk": "young monk hero with a wooden fighting staff, orange and yellow robes, determined smile, full body",
+    "e-fox": "fox spirit archer with fox ears and a fluffy tail, red and white outfit, holding a glowing bow, full body",
+    "f-dragon": "dragon knight in shiny jade green armor with a dragon head helmet, holding a spear, full body",
+    "g-lantern": "lantern mage kid in a dark blue hooded cloak holding a glowing paper lantern staff, magic sparks, full body"
+  },
+  "shopkeepers": {
+    "h-merchant": "friendly old merchant with a long white beard and a round straw hat, big cheerful grin, holding an abacus, full body",
+    "i-panda": "red panda shopkeeper standing upright in a tea house apron, holding a steaming teapot, cheerful, full body"
+  },
+  "items": {
+    "j-sword": "curved sword with a red silk tassel on the handle, single item",
+    "k-armor": "jade green armor chest plate with gold trim, single item",
+    "l-gourd": "health potion in a gourd bottle with glowing red liquid and a cork, single item",
+    "m-coin": "gold coin with a square hole in the center, single item",
+    "n-bigcoin": "large special rainbow crystal coin with a glowing dragon emblem and sparkles, single item"
+  }
+}
