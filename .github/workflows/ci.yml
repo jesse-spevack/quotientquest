@@ -30,9 +30,24 @@ jobs:
       - run: npm test
       - run: npm run build
 
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm install -g npm@11.6.2
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Make local secrets for the dev server
+        run: printf 'CODE_PEPPER=%s\nCODE_KEY=%s\n' "$(openssl rand -base64 32)" "$(openssl rand -base64 32)" > .dev.vars
+      - run: npx playwright test
+
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: check
+    needs: [check, e2e]
     runs-on: ubuntu-latest
     concurrency:
       group: deploy

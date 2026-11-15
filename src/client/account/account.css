@@ -1,0 +1,427 @@
+:root {
+  --qq-night: #0b1420;
+  --qq-panel: rgb(14 28 44 / 0.95);
+  --qq-panel-solid: rgb(14 28 44);
+  --qq-line: rgb(219 232 245 / 0.18);
+  --qq-moonlight: #dbe8f5;
+  --qq-muted: #9fb3c8;
+  --qq-firefly: #ffe08a;
+  --qq-firefly-deep: #f5c84c;
+  --qq-error: #ffb0a3;
+  --qq-online: #9be27a;
+  --qq-play-height: min(100dvh, 100vw * 9 / 16);
+  --qq-letterbox: calc((100dvh - var(--qq-play-height)) / 2);
+}
+
+.qq-ui {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: max(12px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+    max(12px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  pointer-events: none;
+  color: var(--qq-moonlight);
+  font:
+    600 18px / 1.4 "Nunito",
+    "Segoe UI",
+    sans-serif;
+}
+
+.qq-ui.qq-modal {
+  background: rgb(6 12 20 / 0.55);
+  pointer-events: auto;
+}
+
+.qq-panel,
+.qq-card {
+  pointer-events: auto;
+  touch-action: pan-y;
+  box-sizing: border-box;
+  background: var(--qq-panel);
+  border: 1px solid var(--qq-line);
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgb(0 0 0 / 0.45);
+}
+
+.qq-panel {
+  display: flex;
+  flex-direction: column;
+  width: min(560px, 100%);
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.qq-panel-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 24px 8px;
+}
+
+.qq-panel-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 24px 4px;
+  /* Shadows show at an edge only while more content scrolls past it. */
+  background:
+    linear-gradient(var(--qq-panel-solid) 40%, transparent) center top / 100% 28px no-repeat local,
+    linear-gradient(transparent, var(--qq-panel-solid) 60%) center bottom / 100% 28px no-repeat local,
+    radial-gradient(farthest-side at 50% 0, rgb(0 0 0 / 0.55), transparent) center top / 100% 12px no-repeat scroll,
+    radial-gradient(farthest-side at 50% 100%, rgb(0 0 0 / 0.55), transparent) center bottom / 100% 12px no-repeat
+    scroll;
+}
+
+.qq-panel-foot {
+  flex: none;
+  display: grid;
+  padding: 12px 24px 20px;
+}
+
+.qq-panel h1,
+.qq-panel h2 {
+  margin: 0;
+  color: var(--qq-firefly);
+  font:
+    400 32px / 1.1 "Lilita One",
+    "Arial Rounded MT Bold",
+    sans-serif;
+}
+
+.qq-panel h1 {
+  flex: 1;
+  font-size: 48px;
+  text-align: center;
+}
+
+.qq-panel h3 {
+  margin: 20px 0 4px;
+  font:
+    800 18px / 1.3 "Nunito",
+    "Segoe UI",
+    sans-serif;
+  color: var(--qq-moonlight);
+}
+
+.qq-panel p {
+  margin: 0 0 12px;
+}
+
+.qq-lead {
+  text-align: center;
+  font-weight: 800;
+}
+
+.qq-hint {
+  color: var(--qq-muted);
+  font-size: 16px;
+}
+
+.qq-actions,
+.qq-names {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.qq-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.qq-button {
+  min-height: 52px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  font:
+    800 19px / 1.2 "Nunito",
+    "Segoe UI",
+    sans-serif;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.qq-primary {
+  background: var(--qq-firefly);
+  color: var(--qq-night);
+  box-shadow: 0 3px 0 var(--qq-firefly-deep);
+}
+
+.qq-plain {
+  background: transparent;
+  color: var(--qq-moonlight);
+  border-color: rgb(219 232 245 / 0.45);
+}
+
+.qq-quiet {
+  background: transparent;
+  color: var(--qq-muted);
+}
+
+.qq-row > .qq-button {
+  flex: 1 1 160px;
+}
+
+.qq-row > .qq-hint {
+  flex: 1 1 160px;
+  margin: 0;
+}
+
+.qq-button:focus-visible,
+.qq-input:focus-visible {
+  outline: 3px solid var(--qq-online);
+  outline-offset: 2px;
+}
+
+.qq-button:active {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
+.qq-panel-head .qq-button {
+  min-height: 44px;
+  margin: -6px -10px -6px 0;
+}
+
+.qq-panel-foot > .qq-actions,
+.qq-panel-foot > .qq-row {
+  margin-top: 0;
+}
+
+.qq-form {
+  margin: 0;
+}
+
+.qq-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 56px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 2px solid rgb(219 232 245 / 0.45);
+  background: rgb(5 10 16 / 0.6);
+  color: var(--qq-moonlight);
+  font:
+    800 22px / 1.2 "Nunito",
+    "Segoe UI",
+    sans-serif;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.qq-input::placeholder {
+  color: rgb(159 179 200 / 0.55);
+}
+
+.qq-short-code {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+.qq-message {
+  margin: 10px 0 0;
+  font-weight: 800;
+}
+
+.qq-error {
+  color: var(--qq-error);
+}
+
+.qq-note {
+  color: var(--qq-online);
+}
+
+.qq-code {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.qq-code span,
+.qq-code.qq-short {
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: rgb(255 224 138 / 0.12);
+  border: 1px solid rgb(255 224 138 / 0.4);
+  color: var(--qq-firefly);
+  font:
+    400 28px / 1.2 "Lilita One",
+    "Arial Rounded MT Bold",
+    sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.qq-code.qq-short {
+  display: inline-block;
+  letter-spacing: 0.18em;
+}
+
+.qq-steps {
+  margin: 0 0 12px;
+  padding-left: 24px;
+}
+
+.qq-steps li {
+  margin-bottom: 6px;
+}
+
+.qq-devices {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.qq-devices li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid var(--qq-line);
+}
+
+.qq-devices p {
+  margin: 0;
+}
+
+.qq-device-name {
+  font-weight: 800;
+}
+
+.qq-tag {
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgb(155 226 122 / 0.16);
+  color: var(--qq-online);
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.qq-link {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.qq-link > div:last-child {
+  flex: 1 1 200px;
+}
+
+.qq-qr {
+  flex: 0 0 auto;
+  width: 176px;
+  height: 176px;
+  padding: 8px;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.qq-qr svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  shape-rendering: crispEdges;
+}
+
+.qq-qr.qq-expired {
+  opacity: 0.2;
+}
+
+.qq-card {
+  align-self: end;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: calc(var(--qq-letterbox) + var(--qq-play-height) * 0.12);
+  padding: 10px 20px 10px 12px;
+}
+
+.qq-skin {
+  display: block;
+  image-rendering: pixelated;
+}
+
+.qq-card-text p {
+  margin: 0;
+}
+
+.qq-card-name {
+  color: var(--qq-firefly);
+  font:
+    400 26px / 1.2 "Lilita One",
+    "Arial Rounded MT Bold",
+    sans-serif;
+}
+
+.qq-card .qq-button {
+  min-height: 44px;
+  margin-top: 6px;
+}
+
+body.qq-panel-open #rotate-hint {
+  display: none;
+}
+
+@media (max-height: 460px) {
+  .qq-panel-head {
+    padding: 12px 20px 6px;
+  }
+
+  .qq-panel-body {
+    padding: 0 20px 2px;
+  }
+
+  .qq-panel-foot {
+    padding: 10px 20px 14px;
+  }
+
+  .qq-panel h1 {
+    font-size: 40px;
+  }
+
+  .qq-panel h2 {
+    font-size: 28px;
+  }
+
+  .qq-panel p {
+    margin-bottom: 8px;
+  }
+
+  .qq-panel h3 {
+    margin-top: 12px;
+  }
+
+  .qq-tall-only {
+    display: none;
+  }
+
+  .qq-devices li {
+    padding: 4px 0;
+  }
+
+  .qq-actions,
+  .qq-names,
+  .qq-row {
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .qq-names {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+
+  .qq-button {
+    min-height: 48px;
+  }
+}

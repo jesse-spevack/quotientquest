@@ -27,6 +27,23 @@ Every scene follows these rules. The code is in `src/client/layout.ts` and `src/
 - UI text is at least `MIN_TEXT_SIZE` (48 design px). That is at least 16 CSS px on a phone in landscape.
 - Because the pixel scale rounds down, sprites can be up to about 25% smaller on some screens. Leave room for that in each layout.
 
+## Accounts
+
+Any kid can play, so the game collects as little as it can. It asks for no email, no password, and no real name. Kids never type free text, and the game has no chat.
+
+- **Play** makes a player at once. The server offers 3 names from word lists in `src/server/accounts/nameWords.ts`, for example "Swift Moss Otter".
+- Each player gets a **secret code** of 3 words and a number, for example "acorn tiger river 42". The words come from `src/server/accounts/codeWords.ts`. The server keeps an HMAC of the code (with `CODE_PEPPER`) to find the player, and the code encrypted with AES-GCM (with `CODE_KEY`) to show it again in Settings.
+- A signed-in device can **add a device**. It shows a QR code of a single-use link and a 6-letter code. Both work for 5 minutes.
+- After each sign-in, the game asks **"Remember this device?"** Yes keeps the session for 400 days. No ends it when the browser closes, or after one day without play.
+- The session is an HttpOnly cookie. The server keeps only an HMAC of the cookie token.
+- Sign-in and sign-up have rate limits per IP address. Cloudflare keeps the short-lived counters. The game stores no IP addresses.
+
+`CODE_PEPPER` and `CODE_KEY` are Worker secrets. Without them, no secret code works, so keep a copy in 1Password. For local play, put two random values in `.dev.vars`:
+
+```sh
+printf 'CODE_PEPPER=%s\nCODE_KEY=%s\n' "$(openssl rand -base64 32)" "$(openssl rand -base64 32)" > .dev.vars
+```
+
 ## Run the game
 
 Use Node 24 and npm 11.6.2 or later. npm 11.5 crashes when it installs the test tools.
@@ -41,6 +58,7 @@ Use Node 24 and npm 11.6.2 or later. npm 11.5 crashes when it installs the test 
 - Run the tests: `npm test`.
 - Check the types: `npm run typecheck`.
 - Check the lint and the format: `npm run lint`. Fix the format with `npm run format`.
+- Run the browser tests: `npx playwright install chromium`, then `npx playwright test`. They build the game and start `vite preview`, and they need `.dev.vars`. To test the live site, set `PLAYWRIGHT_BASE_URL`.
 - After a change to `wrangler.jsonc`, make the Worker types again: `npm run types`.
 
 GitHub Actions runs all these checks and a build on each pull request.
